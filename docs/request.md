@@ -34,7 +34,7 @@ The platform will be developed with a clear distinction between the Minimum Viab
 
 The system's intelligence will be driven by a multi-agent architecture designed for specialization and security.
 
-*   **Private & Secure LLM Deployment:** All AI processing will be handled by a **private, locally-hosted Large Language Model (e.g., Llama via vLLM/Ollama)** to guarantee absolute data sovereignty.
+*   **Private & Secure LLM Deployment:** All AI processing will be handled by **Together.ai's private cloud deployment** with open-source models (Mixtral, Llama 3) to guarantee data sovereignty and cost optimization while maintaining enterprise-grade security.
 *   **Authentication System:** Clerk authentication with Email and Okta SSO integration, replacing previous Supabase implementation.
 *   **Specialized Agents with Security Fail-safe:** Distinct agents will be created for each core feature. A final "Filtering Node" will act as a supervisor, programmatically enforcing all defined access rules on every response before it reaches the user.
 *   **Bidding Agent - Advanced Requirements:** The Bidding Agent must be equipped with specialized tools and knowledge to:
@@ -51,7 +51,7 @@ The system's intelligence will be driven by a multi-agent architecture designed 
 
 **5. Security & Permissions**
 
-Security is a foundational principle, enforced by the private LLM architecture and granular, role-based access rules (RBAC).
+Security is a foundational principle, enforced by Together.ai's private LLM architecture with open-source model deployment and granular, role-based access rules (RBAC).
 
 *   **Data Terminology Clarification:** For the purpose of this document, **"Budget Information"** refers to the costs and breakdown of a specific project. **"Financial Information"** refers to internal company data such as Profit & Loss (P&L), which is considered highly sensitive.
 *   **Defined Data Sensitivity Hierarchy (Most to Least Sensitive):**

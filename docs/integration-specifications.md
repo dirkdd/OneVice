@@ -216,7 +216,7 @@ class OneViceAgentSupervisor:
         
         # Sales Intelligence Agent
         sales_agent = create_react_agent(
-            self.llm_router.get_llm("anthropic:claude-3-5-sonnet-latest"),
+            self.llm_router.get_llm("together:mixtral-8x7b-instruct"),
             tools=[
                 Neo4jQueryTool(),
                 IndustryDataTool(),
@@ -229,7 +229,7 @@ class OneViceAgentSupervisor:
         
         # Case Study Agent
         case_study_agent = create_react_agent(
-            self.llm_router.get_llm("anthropic:claude-3-5-sonnet-latest"),
+            self.llm_router.get_llm("together:llama-3-70b-chat"),
             tools=[
                 ProjectSimilarityTool(),
                 VectorSearchTool(),
@@ -242,7 +242,7 @@ class OneViceAgentSupervisor:
         
         # Talent Discovery Agent
         talent_agent = create_react_agent(
-            self.llm_router.get_llm("anthropic:claude-3-5-sonnet-latest"),
+            self.llm_router.get_llm("together:mixtral-8x7b-instruct"),
             tools=[
                 TalentSearchTool(),
                 AvailabilityPredictionTool(),
@@ -255,7 +255,7 @@ class OneViceAgentSupervisor:
         
         # Bidding Support Agent
         bidding_agent = create_react_agent(
-            self.llm_router.get_llm("anthropic:claude-3-5-sonnet-latest"),
+            self.llm_router.get_llm("together:llama-3-70b-chat"),
             tools=[
                 UnionRulesTool(),
                 BudgetAnalysisTool(),
@@ -831,7 +831,7 @@ class OneViceLangMemManager:
         
         # User Profile Memory Manager
         managers["user_profiles"] = create_memory_manager(
-            "anthropic:claude-3-5-sonnet-latest",
+            "together:mixtral-8x7b-instruct",
             schemas=[UserProfileMemory],
             instructions="""Extract and maintain user preferences, role information, 
                           and interaction patterns. Focus on:
@@ -845,7 +845,7 @@ class OneViceLangMemManager:
         
         # Agent Episode Memory Manager
         managers["agent_episodes"] = create_memory_manager(
-            "anthropic:claude-3-5-sonnet-latest",
+            "together:mixtral-8x7b-instruct",
             schemas=[SuccessfulInteraction],
             instructions="""Extract successful interaction patterns and strategies 
                           for agent improvement. Focus on:
@@ -858,7 +858,7 @@ class OneViceLangMemManager:
         
         # Domain Knowledge Memory Manager  
         managers["domain_knowledge"] = create_memory_manager(
-            "anthropic:claude-3-5-sonnet-latest",
+            "together:mixtral-8x7b-instruct",
             schemas=[EntertainmentKnowledge],
             instructions="""Extract and organize entertainment industry knowledge 
                           and best practices. Focus on:
@@ -873,7 +873,7 @@ class OneViceLangMemManager:
         
         # Project Memory Manager
         managers["project_memories"] = create_memory_manager(
-            "anthropic:claude-3-5-sonnet-latest", 
+            "together:mixtral-8x7b-instruct", 
             schemas=[ProjectInsights],
             instructions="""Extract insights about project patterns and outcomes.
                           Focus on:

@@ -110,10 +110,10 @@ graph TD
 - **React 19 Concurrent Features**: Suspense, transitions, streaming
 
 #### LLM Providers
-- **Local Llama** (via Ollama/vLLM): For sensitive data processing
-- **Anthropic Claude**: For complex reasoning tasks
-- **Google Gemini**: For long context and multimodal processing
-- **Runtime Switching**: Intelligent model selection based on query type
+- **Together.ai** (Primary): Open-source models (Mixtral-8x7B, Llama-3-70B) for sensitive data processing
+- **Anthropic Claude**: Fallback for complex reasoning when data sensitivity allows
+- **Google Gemini**: Multimodal processing for non-sensitive content
+- **Runtime Switching**: RBAC-driven model selection prioritizing data sovereignty
 
 ## 3. LangMem Memory Management Integration
 

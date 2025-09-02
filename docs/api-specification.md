@@ -164,7 +164,238 @@ Update user profile and preferences.
 }
 ```
 
-### 2.3 AI Agent Query Endpoints
+### 2.3 Admin Management Endpoints
+
+#### POST /admin/users/{user_id}/roles
+Assign role to user (requires `system:admin` or `users:manage_roles` permission).
+
+```json
+{
+  "endpoint": "/admin/users/{user_id}/roles",
+  "method": "POST",
+  "description": "Assign role to user with audit logging",
+  "headers": {
+    "Authorization": "Bearer <jwt_token>"
+  },
+  "request_body": {
+    "role_id": "role_uuid_here",
+    "reason": "Promoted to Director role",
+    "expires_at": "2026-01-01T00:00:00Z"
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "success": true,
+      "message": "Role assigned successfully",
+      "assignment": {
+        "id": "assignment_uuid",
+        "user_id": "user_2...",
+        "role_id": "role_uuid_here",
+        "role_name": "Director",
+        "assigned_by": "admin_user_id",
+        "assigned_at": "2025-09-02T10:00:00Z",
+        "expires_at": "2026-01-01T00:00:00Z",
+        "reason": "Promoted to Director role",
+        "audit_log_id": "audit_uuid"
+      }
+    }
+  }
+}
+```
+
+#### DELETE /admin/users/{user_id}/roles/{role_id}
+Remove role from user (requires `system:admin` or `users:manage_roles` permission).
+
+```json
+{
+  "endpoint": "/admin/users/{user_id}/roles/{role_id}",
+  "method": "DELETE",
+  "description": "Remove role from user with audit logging",
+  "headers": {
+    "Authorization": "Bearer <jwt_token>"
+  },
+  "request_body": {
+    "reason": "Role restructuring"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "message": "Role removed successfully",
+      "removal": {
+        "user_id": "user_2...",
+        "role_id": "role_uuid_here",
+        "role_name": "Director",
+        "removed_by": "admin_user_id",
+        "removed_at": "2025-09-02T10:00:00Z",
+        "reason": "Role restructuring",
+        "audit_log_id": "audit_uuid"
+      }
+    }
+  }
+}
+```
+
+#### GET /admin/users/{user_id}/roles
+Get user roles with hierarchy information (requires `system:admin` or `users:read` permission).
+
+```json
+{
+  "endpoint": "/admin/users/{user_id}/roles",
+  "method": "GET",
+  "description": "Get user's roles and permissions",
+  "headers": {
+    "Authorization": "Bearer <jwt_token>"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "user_id": "user_2...",
+      "roles": [
+        {
+          "id": "role_uuid_here",
+          "name": "Director",
+          "slug": "director",
+          "hierarchyLevel": 3,
+          "assignedAt": "2025-09-02T10:00:00Z",
+          "expiresAt": "2026-01-01T00:00:00Z",
+          "permissions": [
+            "users:read",
+            "agents:create",
+            "agents:read",
+            "agents:update",
+            "agents:delete",
+            "agents:deploy"
+          ]
+        }
+      ],
+      "effective_permissions": [
+        "users:read",
+        "agents:create",
+        "agents:read",
+        "agents:update",
+        "agents:delete",
+        "agents:deploy"
+      ],
+      "highest_role_level": 3
+    }
+  }
+}
+```
+
+#### GET /admin/roles
+List all available roles (requires `system:admin` or `users:read` permission).
+
+```json
+{
+  "endpoint": "/admin/roles",
+  "method": "GET",
+  "description": "Get all system roles and their permissions",
+  "headers": {
+    "Authorization": "Bearer <jwt_token>"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "roles": [
+        {
+          "id": "role_uuid_1",
+          "name": "Leadership",
+          "slug": "leadership",
+          "hierarchyLevel": 4,
+          "description": "Full system access and leadership oversight",
+          "isActive": true,
+          "isSystem": true,
+          "permissions": [
+            "users:create",
+            "users:read",
+            "users:update",
+            "users:delete",
+            "users:manage_roles",
+            "system:admin"
+          ]
+        },
+        {
+          "id": "role_uuid_2",
+          "name": "Director",
+          "slug": "director",
+          "hierarchyLevel": 3,
+          "description": "Department management and advanced agent access",
+          "isActive": true,
+          "isSystem": true,
+          "permissions": [
+            "users:read",
+            "agents:create",
+            "agents:read",
+            "agents:update"
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+#### GET /admin/audit/logs
+Get audit logs for RBAC operations (requires `system:admin` permission).
+
+```json
+{
+  "endpoint": "/admin/audit/logs",
+  "method": "GET",
+  "description": "Get audit logs with filtering and pagination",
+  "headers": {
+    "Authorization": "Bearer <jwt_token>"
+  },
+  "parameters": {
+    "page": 1,
+    "limit": 50,
+    "action": "ROLE_ASSIGNED",
+    "severity": "MEDIUM",
+    "start_date": "2025-09-01T00:00:00Z",
+    "end_date": "2025-09-02T23:59:59Z",
+    "actor_user_id": "user_uuid",
+    "target_user_id": "user_uuid"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "logs": [
+        {
+          "id": "audit_uuid",
+          "action": "ROLE_ASSIGNED",
+          "description": "Role 'Director' assigned to user@example.com",
+          "severity": "MEDIUM",
+          "timestamp": "2025-09-02T10:00:00Z",
+          "actor": {
+            "user_id": "admin_uuid",
+            "email": "admin@example.com",
+            "ip_address": "192.168.1.100"
+          },
+          "target": {
+            "user_id": "user_uuid",
+            "email": "user@example.com",
+            "role_id": "role_uuid"
+          },
+          "metadata": {
+            "role_name": "Director",
+            "reason": "Promoted to Director role"
+          },
+          "success": true
+        }
+      ],
+      "pagination": {
+        "page": 1,
+        "limit": 50,
+        "total": 125,
+        "pages": 3
+      }
+    }
+  }
+}
+```
+
+### 2.4 AI Agent Query Endpoints
 
 #### POST /agents/sales-intelligence/query
 Query the Sales Intelligence Agent for contact and company research.
@@ -746,6 +977,11 @@ socket.onmessage = (event) => {
       "/projects": {
         "requests_per_minute": 100,
         "burst_limit": 20
+      },
+      "/admin/*": {
+        "requests_per_minute": 50,
+        "burst_limit": 10,
+        "required_permissions": ["system:admin", "users:manage_roles"]
       }
     }
   }

@@ -48,11 +48,11 @@ graph TB
     end
     
     subgraph "LLM & AI Layer"
-        Router[LLM Router<br/>Model Selection<br/>Cost Optimization<br/>Load Distribution]
+        Router[LLM Router<br/>RBAC-driven Selection<br/>Security-first Routing<br/>Cost Optimization]
         
-        Local[Local Llama<br/>Sensitive Data Processing<br/>On-Premise Inference<br/>Privacy Compliance]
+        Together[Together.ai<br/>Primary LLM Provider<br/>Mixtral & Llama 3<br/>Data Sovereignty]
         
-        Claude[Anthropic Claude<br/>Complex Reasoning<br/>Strategic Analysis<br/>Natural Language]
+        Claude[Anthropic Claude<br/>Complex Reasoning Fallback<br/>Non-sensitive Data<br/>Strategic Analysis]
         
         Gemini[Google Gemini<br/>Multimodal Processing<br/>Long Context Analysis<br/>Document Understanding]
     end
@@ -861,9 +861,9 @@ graph TB
     end
     
     subgraph "AI & LLM Stack"
-        LocalLlama[Local Llama<br/>Sensitive Data Processing<br/>On-premise Inference<br/>Privacy Compliance]
+        Together[Together.ai<br/>Primary LLM Provider<br/>Mixtral & Llama 3<br/>Data Sovereignty & Privacy]
         
-        Claude[Anthropic Claude<br/>Complex Reasoning<br/>Strategic Analysis<br/>Natural Language Processing]
+        Claude[Anthropic Claude<br/>Complex Reasoning Fallback<br/>Non-sensitive Data<br/>Strategic Analysis]
         
         Gemini[Google Gemini<br/>Multimodal Processing<br/>Long Context Window<br/>Document Understanding]
     end
@@ -887,7 +887,7 @@ graph TB
     NextJS --> React --> TypeScript --> Tailwind --> Zustand
     FastAPI --> Python --> LangGraph --> LangMem
     Neo4j --> Redis --> Embeddings
-    LocalLlama --> Claude --> Gemini
+    Together --> Claude --> Gemini
     Clerk --> OktaSSO --> RBAC
     Render --> Cloud --> LangSmith
     

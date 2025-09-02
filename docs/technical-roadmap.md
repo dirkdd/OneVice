@@ -69,6 +69,16 @@ SUPABASE_SERVICE_ROLE_KEY=[dev-service-key]
 ENVIRONMENT=development
 PORT=8000
 ALLOWED_ORIGINS=http://localhost:3000
+
+# LLM API Keys (Development)
+TOGETHER_API_KEY=[together-api-key]
+ANTHROPIC_API_KEY=[anthropic-api-key] 
+OPENAI_API_KEY=[openai-api-key]
+
+# LangSmith Observability (Development)
+LANGSMITH_API_KEY=[langsmith-api-key]
+LANGSMITH_PROJECT=onevice-development
+LANGSMITH_TRACING=true
 ```
 
 **Database Connection Testing**
@@ -80,6 +90,7 @@ import redis
 import psycopg2
 
 # Test Neo4j Aura connection
+# Note: Driver 5.28.1+ compatibility - no max_retry_time or encrypted parameters
 driver = GraphDatabase.driver('neo4j+s://[dev-database-id].databases.neo4j.io:7687', 
                               auth=('neo4j', 'dev-secure-password'))
 print('Neo4j connection: OK')
@@ -596,9 +607,128 @@ class WebSocketManager:
                 await self.disconnect(connection.id, "Connection degraded")
 ```
 
-### Phase 3: Advanced Features (Weeks 6-8)
+### Phase 3: Frontend Development (Weeks 5-6)
 
-#### 2.3.1 Vector Search Integration
+#### 2.3.1 UI Foundation and Design System Implementation
+
+**Priority 1: Core Layout System (Week 5 - Days 1-2)**
+```bash
+# Frontend environment setup and component foundation
+cd frontend
+
+# Install OneVice-specific dependencies
+npm install @headlessui/react@^1.7.0
+npm install @heroicons/react@^2.0.0
+npm install class-variance-authority@^0.7.0
+npm install clsx@^2.0.0
+npm install tailwind-merge@^2.0.0
+npm install framer-motion@^10.16.0
+
+# Configure Tailwind for OneVice design system
+# Implement glassmorphic component library
+# Create navigation header with RBAC integration
+```
+
+**Glassmorphic Component System**
+```typescript
+// components/ui/GlassmorphicCard.tsx
+export const GlassmorphicCard: React.FC<GlassmorphicCardProps> = ({
+  variant = 'default',
+  children,
+  ...props
+}) => {
+  const variants = {
+    default: 'bg-white/5 backdrop-blur-[12px] border-white/10',
+    elevated: 'bg-white/8 backdrop-blur-[16px] border-white/15 shadow-glass-elevated',
+    interactive: 'bg-white/5 backdrop-blur-[12px] border-white/10 hover:bg-white/8 hover:border-white/20 hover:-translate-y-0.5',
+    modal: 'bg-black/85 backdrop-blur-[20px] border-white/15 shadow-glass-modal',
+  };
+
+  return (
+    <div className={cn(
+      'transition-all duration-300 border rounded-xl',
+      variants[variant],
+      props.className
+    )}>
+      {children}
+    </div>
+  );
+};
+```
+
+**Priority 2: Page Implementation (Week 5 - Days 3-5)**
+```typescript
+// Pixel-perfect Figma implementation
+// app/page.tsx - Home page (1440x4765px)
+// app/login/page.tsx - Login page (1440x1596px)  
+// app/leadership/page.tsx - Leadership dashboard (1440x1440px square)
+// app/talent/page.tsx - Talent discovery (1440x1596px)
+// app/bidding/page.tsx - Bidding platform (1440x1596px)
+
+// Exact Figma gradients implementation
+const figmaGradients = {
+  home: 'linear-gradient(90deg, rgba(10, 10, 11, 1) 0%, rgba(26, 26, 27, 1) 50%, rgba(17, 17, 17, 1) 100%)',
+  leadership: 'linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(17, 17, 17, 1) 50%, rgba(0, 0, 0, 1) 100%)',
+};
+```
+
+#### 2.3.2 Interactive Components and Real-time Features (Week 6)
+
+**Priority 3: Dashboard and AI Interface Components**
+```typescript
+// components/chat/ChatInterface.tsx - AI agent communication
+// components/dashboard/KPICard.tsx - Leadership metrics
+// components/talent/TalentCard.tsx - Talent discovery interface
+// components/bidding/BiddingControlPanel.tsx - Real-time bidding
+
+// WebSocket integration for real-time updates
+export function useWebSocket(url: string, userId: string) {
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  
+  useEffect(() => {
+    const ws = new WebSocket(`${url}?userId=${userId}`);
+    ws.onopen = () => setIsConnected(true);
+    ws.onmessage = (event) => {
+      // Handle real-time updates
+    };
+    setSocket(ws);
+  }, [url, userId]);
+
+  return { socket, isConnected };
+}
+```
+
+**Priority 4: Backend Integration**
+```typescript
+// API integration with FastAPI backend
+// Authentication flow with Clerk and RBAC
+// WebSocket connections for real-time features
+// Error handling and loading states
+
+// hooks/useAPI.ts - Backend integration
+export function useAPI() {
+  const apiClient = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_API_URL,
+    timeout: 10000,
+  });
+
+  return {
+    agents: {
+      sales: (query: string) => apiClient.post('/agents/sales', { query }),
+      talent: (filters: any) => apiClient.post('/agents/talent', filters),
+      bidding: (project: string) => apiClient.get(`/agents/bidding/${project}`),
+    },
+    realtime: {
+      connectWebSocket: () => new WebSocket(process.env.NEXT_PUBLIC_WS_URL!),
+    },
+  };
+}
+```
+
+### Phase 4: Advanced Features (Weeks 7-8)
+
+#### 2.4.1 Vector Search Integration
 
 **Hybrid Search Implementation**
 ```python
@@ -898,7 +1028,7 @@ class UnionIntegrationService:
         return await self._synthesize_union_analysis(processed_results, project_details)
 ```
 
-### Phase 4: Production Readiness (Weeks 9-10)
+### Phase 5: Production Readiness (Weeks 9-10)
 
 #### 2.4.1 Observability Implementation
 
@@ -1207,6 +1337,7 @@ class OneVicePerformanceMonitor:
 
 **Layer 1: Foundation Validation**
 - [ ] Neo4j schema matches entertainment industry ontology
+- [ ] Neo4j driver 5.28.1+ compatibility verified (no max_retry_time, correct encrypted handling)
 - [ ] Redis caching strategy implements all specified patterns
 - [ ] Clerk authentication integrates with Okta SSO
 - [ ] RBAC system enforces 6-level data sensitivity
@@ -1481,13 +1612,25 @@ class ServiceDegradationManager:
 - LangGraph setup → Agent implementation
 - Memory management → Personalization features
 - Security filtering → Production readiness
-- Vector search → Advanced query capabilities
+- API endpoints → Frontend integration readiness
 
-**Week 6-8: Integration Dependencies**
+**Week 5-6: Frontend Development Dependencies**
+- Backend APIs available → Frontend integration
+- Authentication system → User interface access
+- WebSocket infrastructure → Real-time UI features
+- Agent functionality → AI interface components
+
+**Week 7-8: Advanced Feature Dependencies**  
+- Vector search → Advanced query capabilities
 - Union API setup → Bidding functionality
-- Performance optimization → Scalability testing
+- Frontend-backend integration → Full system testing
+- Performance optimization → Scalability validation
+
+**Week 9-10: Production Dependencies**
 - Monitoring setup → Production deployment
 - Security audit → Go-live approval
+- Full integration testing → System validation
+- Performance benchmarks → Production readiness
 
 ### 6.3 Quality Assurance Strategy
 

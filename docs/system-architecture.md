@@ -51,10 +51,10 @@ graph TB
     end
     
     subgraph "LLM Layer"
-        Local[Local Llama<br/>Sensitive Data<br/>On-premise Processing]
-        Claude[Anthropic Claude<br/>Complex Reasoning<br/>Strategic Analysis]
+        Together[Together.ai<br/>Primary LLM<br/>Mixtral & Llama 3<br/>Data Sovereignty]
+        Claude[Anthropic Claude<br/>Complex Reasoning<br/>Non-sensitive Fallback]
         Gemini[Google Gemini<br/>Multimodal Processing<br/>Long Context]
-        Router[LLM Router<br/>Cost Optimization<br/>Model Selection]
+        Router[LLM Router<br/>RBAC-driven Selection<br/>Security-first Routing]
     end
     
     subgraph "External Integration Layer"
