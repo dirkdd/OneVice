@@ -1,0 +1,144 @@
+# OneVice Render Infrastructure Blueprint
+# Comprehensive service definitions for production deployment
+
+services:
+  # Frontend Vite Application  
+  - type: static
+    name: onevice-frontend
+    buildCommand: |
+      cd frontend
+      npm ci
+      npm run build
+    publishDir: ./frontend/dist
+    branch: main
+    buildFilter:
+      paths:
+        - frontend/**
+        - frontend/package.json
+        - frontend/package-lock.json
+        - frontend/vite.config.ts
+        - frontend/tailwind.config.js
+        - frontend/tsconfig.json
+      ignoredPaths:
+        - backend/**
+        - docs/**
+        - render/**
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_API_URL
+        value: https://onevice-backend.onrender.com
+      - key: VITE_WS_URL
+        value: wss://onevice-backend.onrender.com/ws
+      - key: VITE_CLERK_PUBLISHABLE_KEY
+        sync: false
+
+  # Backend FastAPI Application
+  - type: web
+    name: onevice-backend
+    runtime: python
+    plan: standard  # 2GB RAM, 1 CPU for AI workloads
+    region: oregon
+    branch: main
+    rootDir: ./backend
+    buildCommand: |
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT --workers 2
+    buildFilter:
+      paths:
+        - backend/**
+        - requirements.txt
+      ignoredPaths:
+        - frontend/**
+        - docs/**
+        - render/**
+    healthCheckPath: /health
+    envVars:
+      # Application Configuration
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: LOG_LEVEL
+        value: INFO
+      - key: ALLOWED_ORIGINS
+        value: "https://onevice-frontend.onrender.com,https://onevice.com"
+      
+      # External Database Connections (Using your existing remote instances)
+      - key: NEO4J_URI
+        sync: false
+      - key: NEO4J_USERNAME
+        sync: false
+      - key: NEO4J_PASSWORD
+        sync: false
+      - key: REDIS_HOST
+        sync: false
+      - key: REDIS_PORT
+        sync: false
+      - key: REDIS_PASSWORD
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      
+      # Authentication
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: CLERK_WEBHOOK_SECRET
+        sync: false
+      - key: OKTA_CLIENT_ID
+        sync: false
+      - key: OKTA_CLIENT_SECRET
+        sync: false
+      - key: OKTA_DOMAIN
+        value: your-domain.okta.com
+      
+      # LLM API Keys
+      - key: TOGETHER_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      
+      # Observability
+      - key: LANGSMITH_API_KEY
+        sync: false
+      - key: LANGSMITH_PROJECT
+        value: onevice-production
+      - key: LANGSMITH_TRACING
+        value: "true"
+      
+      # Union API Keys
+      - key: IATSE_API_KEY
+        sync: false
+      - key: DGA_API_KEY
+        sync: false
+      - key: SAG_AFTRA_API_KEY
+        sync: false
+      
+      # Security
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: ENCRYPTION_KEY
+        sync: false
+
+# Worker service not needed for demo
+
+# No managed databases - using external services
+
+# Environment-specific overrides (simplified for demo)
+# No environment overrides needed for demo deployment
+
+# Notification settings
+notifications:
+  - type: slack
+    webhook: $SLACK_WEBHOOK_URL
+    events:
+      - deploy-started
+      - deploy-succeeded
+      - deploy-failed
+      - service-suspended
+
+# Domain configuration (to be configured in Render dashboard)
+# Custom domains:
+# - onevice.com -> onevice-frontend
+# - api.onevice.com -> onevice-backend

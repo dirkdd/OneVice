@@ -1,0 +1,64 @@
+# OneVice Backend Dependencies - Updated for Modern Stack
+# Core FastAPI framework - Updated to modern versions
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+
+# Database - Updated versions
+sqlalchemy>=2.0.25
+psycopg2-binary>=2.9.9
+alembic>=1.13.0
+
+# Authentication & Security - Updated versions
+python-jose[cryptography]>=3.3.0
+python-multipart>=0.0.6
+bcrypt>=4.1.0
+passlib>=1.7.4
+
+# Redis for sessions and caching - Updated versions
+redis>=5.0.1
+aioredis>=2.0.1
+
+# Environment management
+python-dotenv>=1.0.0
+
+# Data validation and serialization - Updated versions
+pydantic>=2.6.0
+pydantic-settings>=2.1.0
+
+# HTTP client for external APIs
+httpx>=0.27.0
+
+# Neo4j integration
+neo4j>=5.15.0
+
+# LangChain and AI - MODERN VERSIONS (per CLAUDE.md spec)
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-community>=0.3.0
+langchain-openai>=0.2.0
+langchain-neo4j>=0.1.0
+langgraph>=0.6.6
+langgraph-checkpoint>=1.0.0
+langgraph-checkpoint-redis>=0.1.0
+langmem>=0.1.0
+langsmith>=0.1.0
+openai>=1.10.0
+
+# Vector operations for memory embeddings
+numpy>=1.26.0
+
+# WebSocket support
+websockets>=12.0
+
+# Monitoring and logging
+structlog>=23.2.0
+
+# Development and testing - Updated versions
+pytest>=7.4.0
+pytest-asyncio>=0.23.0
+black>=23.11.0
+flake8>=6.1.0
+mypy>=1.8.0
+
+# Session middleware
+itsdangerous>=2.1.2

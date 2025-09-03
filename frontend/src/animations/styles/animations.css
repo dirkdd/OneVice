@@ -1,0 +1,258 @@
+/* Animation styles for OneVice micro-interactions */
+
+@layer utilities {
+  /* Glitch effect scanlines */
+  .glitch-scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  
+  .glitch-scanlines::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      rgba(255, 255, 255, 0.03) 1px,
+      rgba(255, 255, 255, 0.03) 2px,
+      transparent 3px
+    );
+    animation: scanlines 8s linear infinite;
+  }
+  
+  @keyframes scanlines {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+  
+  /* Glitch RGB separation */
+  .glitch-rgb::before,
+  .glitch-rgb::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.8;
+    mix-blend-mode: screen;
+  }
+  
+  .glitch-rgb::before {
+    color: #ff0040;
+    transform: translateX(-2px);
+  }
+  
+  .glitch-rgb::after {
+    color: #00ff80;
+    transform: translateX(2px);
+  }
+  
+  /* Glass morphism base */
+  .glass-morphism {
+    backdrop-filter: blur(10px) saturate(180%);
+    -webkit-backdrop-filter: blur(10px) saturate(180%);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+  }
+  
+  .glass-morphism-enhanced {
+    backdrop-filter: blur(15px) saturate(200%);
+    -webkit-backdrop-filter: blur(15px) saturate(200%);
+    background: rgba(255, 255, 255, 0.075);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Energy charge effect */
+  .energy-charge {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .energy-charge::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+      45deg,
+      transparent 30%,
+      #00ffff 50%,
+      transparent 70%
+    );
+    opacity: 0;
+    border-radius: inherit;
+    z-index: -1;
+  }
+  
+  .energy-charge.charging::before {
+    animation: charge 2s ease-in-out infinite;
+  }
+  
+  @keyframes charge {
+    0%, 100% { 
+      opacity: 0; 
+      transform: scale(0.95) rotate(0deg); 
+    }
+    50% { 
+      opacity: 1; 
+      transform: scale(1) rotate(180deg); 
+    }
+  }
+  
+  /* Liquid metal flow */
+  .liquid-metal {
+    background: linear-gradient(
+      90deg,
+      #BC995C 0%,
+      #DBC173 25%,
+      #BC995C 50%,
+      #DBC173 75%,
+      #BC995C 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  
+  .liquid-metal-flowing {
+    animation: liquidFlow 3s linear infinite;
+  }
+  
+  @keyframes liquidFlow {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  
+  /* Holographic effect */
+  .holographic {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .holographic::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.5s ease-out;
+  }
+  
+  .holographic:hover::before {
+    left: 100%;
+  }
+  
+  /* Ink reveal effect */
+  .ink-reveal {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ink-reveal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.1) 0%,
+      transparent 70%
+    );
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.6s ease-out;
+  }
+  
+  .ink-reveal.revealed::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  /* Circuit trace effect */
+  .circuit-trace {
+    position: relative;
+  }
+  
+  .circuit-trace::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      #00ffff,
+      transparent
+    );
+    opacity: 0;
+    transform: translateY(-50%) scaleX(0);
+    transition: all 0.3s ease-out;
+  }
+  
+  .circuit-trace:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) scaleX(1);
+  }
+  
+  /* GPU acceleration utilities */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+  }
+  
+  /* Performance-optimized animations */
+  .reduced-motion {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  /* Floating animation */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+  }
+  
+  .floating {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  /* Pulse glow */
+  @keyframes pulseGlow {
+    0%, 100% { 
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+    50% { 
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+    }
+  }
+  
+  .pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+}

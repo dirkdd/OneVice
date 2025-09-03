@@ -1,0 +1,67 @@
+# Node modules
+node_modules/
+
+# Python virtual environments
+venv/
+env/
+.env
+.venv
+/backend/venv/
+
+# Build outputs
+build/
+dist/
+out/
+.next/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Cache directories
+.cache/
+.parcel-cache/
+.turbo/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Coverage reports
+coverage/
+.nyc_output/
+.coverage
+*.cover
+
+# TypeScript
+*.tsbuildinfo

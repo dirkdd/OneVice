@@ -1,0 +1,17 @@
+# Test dependencies for OneVice database connections
+# Based on technical-roadmap.md Phase 1, Priority 2
+
+# Neo4j driver
+neo4j==5.15.0
+
+# Redis client
+redis==5.0.1
+
+# PostgreSQL adapter
+psycopg2-binary==2.9.9
+
+# Environment management
+python-dotenv==1.0.0
+
+# HTTP client for API testing
+requests==2.31.0

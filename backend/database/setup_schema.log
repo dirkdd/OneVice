@@ -1,0 +1,1022 @@
+2025-09-01 21:30:16 - __main__ - INFO - 🚀 OneVice Database Schema Setup Starting...
+2025-09-01 21:30:16 - __main__ - INFO - Loading configuration from environment variables
+2025-09-01 21:30:16 - __main__ - INFO - Database URI: neo4j://localhost:7687
+2025-09-01 21:30:16 - __main__ - INFO - Database: neo4j
+2025-09-01 21:30:16 - __main__ - INFO - Username: neo4j
+2025-09-01 21:30:16 - __main__ - INFO - Encrypted: True
+2025-09-01 21:30:16 - __main__ - INFO - 📡 Connecting to database...
+2025-09-01 21:30:16 - database.connection_manager - INFO - Connection manager initialized
+2025-09-01 21:30:16 - database.connection_manager - INFO - Initializing database connections...
+2025-09-01 21:30:16 - database.neo4j_client - INFO - Neo4j client initialized for database: neo4j
+2025-09-01 21:30:16 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:30:16 - database.neo4j_client - ERROR - Neo4j connection failed: Unexpected config keys: max_retry_time
+2025-09-01 21:30:16 - __main__ - ERROR - ❌ Failed to initialize database connection
+2025-09-01 21:30:16 - __main__ - ERROR -   - Failed to connect to Neo4j database
+2025-09-01 21:35:51 - __main__ - INFO - 🚀 OneVice Database Schema Setup Starting...
+2025-09-01 21:35:51 - __main__ - INFO - Loading configuration from environment variables
+2025-09-01 21:35:51 - __main__ - INFO - Database URI: neo4j://localhost:7687
+2025-09-01 21:35:51 - __main__ - INFO - Database: neo4j
+2025-09-01 21:35:51 - __main__ - INFO - Username: neo4j
+2025-09-01 21:35:51 - __main__ - INFO - Encrypted: True
+2025-09-01 21:35:51 - __main__ - INFO - 📡 Connecting to database...
+2025-09-01 21:35:51 - database.connection_manager - INFO - Connection manager initialized
+2025-09-01 21:35:51 - database.connection_manager - INFO - Initializing database connections...
+2025-09-01 21:35:51 - database.neo4j_client - INFO - Neo4j client initialized for database: neo4j
+2025-09-01 21:35:51 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:35:51 - database.neo4j_client - ERROR - Neo4j connection failed: Unexpected config keys: max_retry_time
+2025-09-01 21:35:51 - __main__ - ERROR - ❌ Failed to initialize database connection
+2025-09-01 21:35:51 - __main__ - ERROR -   - Failed to connect to Neo4j database
+2025-09-01 21:39:10 - __main__ - INFO - 🚀 OneVice Database Schema Setup Starting...
+2025-09-01 21:39:10 - __main__ - INFO - Loading configuration from environment variables
+2025-09-01 21:39:10 - __main__ - INFO - Database URI: neo4j://localhost:7687
+2025-09-01 21:39:10 - __main__ - INFO - Database: neo4j
+2025-09-01 21:39:10 - __main__ - INFO - Username: neo4j
+2025-09-01 21:39:10 - __main__ - INFO - Encrypted: True
+2025-09-01 21:39:10 - __main__ - INFO - 📡 Connecting to database...
+2025-09-01 21:39:10 - database.connection_manager - INFO - Connection manager initialized
+2025-09-01 21:39:10 - database.connection_manager - INFO - Initializing database connections...
+2025-09-01 21:39:10 - database.neo4j_client - INFO - Neo4j client initialized for database: neo4j
+2025-09-01 21:39:10 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:10 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:10 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:10 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:10 - database.connection_manager - INFO - Neo4j connection established
+2025-09-01 21:39:10 - database.schema_manager - INFO - Schema manager initialized
+2025-09-01 21:39:10 - database.connection_manager - INFO - Database initialization completed successfully in 0.03s
+2025-09-01 21:39:10 - __main__ - INFO - ✅ Database connection established
+2025-09-01 21:39:10 - __main__ - INFO - 🏗️  Creating database schema...
+2025-09-01 21:39:10 - database.schema_manager - INFO - Creating OneVice core schema...
+2025-09-01 21:39:10 - database.schema_manager - INFO - Creating database constraints...
+2025-09-01 21:39:10 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:10 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:10 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:10 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:10 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:10 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:10 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:10 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:10 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:10 - database.schema_manager - ERROR - Failed to create constraint person_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:10 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:10 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:10 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:10 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:10 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:10 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:10 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create constraint project_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create constraint organization_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create constraint document_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create constraint person_email_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create constraint organization_name_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - INFO - Creating database indexes...
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create index person_name_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create index person_role_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create index project_name_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create index project_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create index project_status_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create index organization_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create index document_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create index document_created_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - INFO - Creating vector indexes...
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create vector index person_bio_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create vector index project_concept_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create vector index document_content_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to create vector index creative_concept_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - WARNING - Core schema creation completed with some failures
+2025-09-01 21:39:11 - __main__ - ERROR - ❌ Database schema creation completed with errors
+2025-09-01 21:39:11 - __main__ - ERROR - Constraint creation errors:
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create constraint person_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create constraint project_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create constraint organization_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create constraint document_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create constraint person_email_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create constraint organization_name_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR - Index creation errors:
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create index person_name_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create index person_role_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create index project_name_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create index project_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create index project_status_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create index organization_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create index document_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create index document_created_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR - Vector index creation errors:
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create vector index person_bio_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create vector index project_concept_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create vector index document_content_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - ERROR -   - Failed to create vector index creative_concept_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - __main__ - INFO - 🔍 Validating created schema...
+2025-09-01 21:39:11 - database.schema_manager - INFO - Validating database schema...
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to fetch constraints: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to fetch indexes: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:11 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:11 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - ERROR - Failed to fetch vector indexes: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:11 - database.schema_manager - INFO - Schema validation completed. Valid: False
+2025-09-01 21:39:11 - __main__ - WARNING - ⚠️  Schema validation found issues after creation
+2025-09-01 21:39:11 - database.connection_manager - INFO - Closing database connections...
+2025-09-01 21:39:11 - database.neo4j_client - INFO - Neo4j connection closed successfully
+2025-09-01 21:39:11 - database.connection_manager - INFO - Database connections closed
+2025-09-01 21:39:11 - __main__ - ERROR - ❌ Schema setup completed with errors
+2025-09-01 21:39:38 - __main__ - INFO - 🚀 OneVice Database Schema Setup Starting...
+2025-09-01 21:39:38 - __main__ - INFO - Loading configuration from environment variables
+2025-09-01 21:39:38 - __main__ - INFO - Database URI: neo4j://localhost:7687
+2025-09-01 21:39:38 - __main__ - INFO - Database: neo4j
+2025-09-01 21:39:38 - __main__ - INFO - Username: neo4j
+2025-09-01 21:39:38 - __main__ - INFO - Encrypted: True
+2025-09-01 21:39:38 - __main__ - INFO - 📡 Connecting to database...
+2025-09-01 21:39:38 - database.connection_manager - INFO - Connection manager initialized
+2025-09-01 21:39:38 - database.connection_manager - INFO - Initializing database connections...
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Neo4j client initialized for database: neo4j
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:38 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:38 - database.connection_manager - INFO - Neo4j connection established
+2025-09-01 21:39:38 - database.schema_manager - INFO - Schema manager initialized
+2025-09-01 21:39:38 - database.connection_manager - INFO - Database initialization completed successfully in 0.03s
+2025-09-01 21:39:38 - __main__ - INFO - ✅ Database connection established
+2025-09-01 21:39:38 - __main__ - INFO - 🏗️  Creating database schema...
+2025-09-01 21:39:38 - database.schema_manager - INFO - Creating OneVice core schema...
+2025-09-01 21:39:38 - database.schema_manager - INFO - Creating database constraints...
+2025-09-01 21:39:38 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:38 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:38 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:38 - database.schema_manager - ERROR - Failed to create constraint person_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:38 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:38 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:38 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:38 - database.schema_manager - ERROR - Failed to create constraint project_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:38 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:38 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:38 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:38 - database.schema_manager - ERROR - Failed to create constraint organization_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:38 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:38 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create constraint document_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create constraint person_email_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create constraint organization_name_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - INFO - Creating database indexes...
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create index person_name_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create index person_role_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create index project_name_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create index project_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create index project_status_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create index organization_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create index document_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create index document_created_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - INFO - Creating vector indexes...
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create vector index person_bio_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create vector index project_concept_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create vector index document_content_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to create vector index creative_concept_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - WARNING - Core schema creation completed with some failures
+2025-09-01 21:39:39 - __main__ - ERROR - ❌ Database schema creation completed with errors
+2025-09-01 21:39:39 - __main__ - ERROR - Constraint creation errors:
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create constraint person_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create constraint project_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create constraint organization_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create constraint document_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create constraint person_email_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create constraint organization_name_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR - Index creation errors:
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create index person_name_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create index person_role_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create index project_name_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create index project_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create index project_status_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create index organization_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create index document_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create index document_created_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR - Vector index creation errors:
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create vector index person_bio_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create vector index project_concept_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create vector index document_content_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - ERROR -   - Failed to create vector index creative_concept_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - __main__ - INFO - 🔍 Validating created schema...
+2025-09-01 21:39:39 - database.schema_manager - INFO - Validating database schema...
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to fetch constraints: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to fetch indexes: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:39:39 - neo4j.pool - ERROR - Unable to retrieve routing information
+2025-09-01 21:39:39 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - ERROR - Failed to fetch vector indexes: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-01 21:39:39 - database.schema_manager - INFO - Schema validation completed. Valid: False
+2025-09-01 21:39:39 - __main__ - WARNING - ⚠️  Schema validation found issues after creation
+2025-09-01 21:39:39 - database.connection_manager - INFO - Closing database connections...
+2025-09-01 21:39:39 - database.neo4j_client - INFO - Neo4j connection closed successfully
+2025-09-01 21:39:39 - database.connection_manager - INFO - Database connections closed
+2025-09-01 21:39:39 - __main__ - ERROR - ❌ Schema setup completed with errors
+2025-09-01 21:39:53 - __main__ - INFO - 🚀 OneVice Database Schema Setup Starting...
+2025-09-01 21:39:53 - __main__ - INFO - Loading configuration from environment variables
+2025-09-01 21:39:53 - __main__ - INFO - Database URI: neo4j+s://90fba3c7.databases.neo4j.io
+2025-09-01 21:39:53 - __main__ - INFO - Database: neo4j
+2025-09-01 21:39:53 - __main__ - INFO - Username: neo4j
+2025-09-01 21:39:53 - __main__ - INFO - Encrypted: True
+2025-09-01 21:39:53 - __main__ - INFO - 📡 Connecting to database...
+2025-09-01 21:39:53 - database.connection_manager - INFO - Connection manager initialized
+2025-09-01 21:39:53 - database.connection_manager - INFO - Initializing database connections...
+2025-09-01 21:39:53 - database.neo4j_client - INFO - Neo4j client initialized for database: neo4j
+2025-09-01 21:39:53 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j+s://90fba3c7.databases.neo4j.io
+2025-09-01 21:39:53 - database.neo4j_client - ERROR - Neo4j connection failed: The config settings "encrypted", "trust", "trusted_certificates", and "ssl_context" can only be used with the URI schemes ['bolt', 'neo4j']. Use the other URI schemes ['bolt+ssc', 'bolt+s', 'neo4j+ssc', 'neo4j+s'] for setting encryption settings.
+2025-09-01 21:39:53 - __main__ - ERROR - ❌ Failed to initialize database connection
+2025-09-01 21:39:53 - __main__ - ERROR -   - Failed to connect to Neo4j database
+2025-09-01 21:40:22 - __main__ - INFO - 🚀 OneVice Database Schema Setup Starting...
+2025-09-01 21:40:22 - __main__ - INFO - Loading configuration from environment variables
+2025-09-01 21:40:22 - __main__ - INFO - Database URI: neo4j+s://90fba3c7.databases.neo4j.io
+2025-09-01 21:40:22 - __main__ - INFO - Database: neo4j
+2025-09-01 21:40:22 - __main__ - INFO - Username: neo4j
+2025-09-01 21:40:22 - __main__ - INFO - Encrypted: True
+2025-09-01 21:40:22 - __main__ - INFO - 📡 Connecting to database...
+2025-09-01 21:40:22 - database.connection_manager - INFO - Connection manager initialized
+2025-09-01 21:40:22 - database.connection_manager - INFO - Initializing database connections...
+2025-09-01 21:40:22 - database.neo4j_client - INFO - Neo4j client initialized for database: neo4j
+2025-09-01 21:40:22 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j+s://90fba3c7.databases.neo4j.io
+2025-09-01 21:40:24 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:40:24 - database.connection_manager - INFO - Neo4j connection established
+2025-09-01 21:40:24 - database.schema_manager - INFO - Schema manager initialized
+2025-09-01 21:40:24 - database.connection_manager - INFO - Database initialization completed successfully in 2.36s
+2025-09-01 21:40:24 - __main__ - INFO - ✅ Database connection established
+2025-09-01 21:40:24 - __main__ - INFO - 🏗️  Creating database schema...
+2025-09-01 21:40:24 - database.schema_manager - INFO - Creating OneVice core schema...
+2025-09-01 21:40:24 - database.schema_manager - INFO - Creating database constraints...
+2025-09-01 21:40:25 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:25 - database.schema_manager - ERROR - Failed to create constraint person_id_unique: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:25 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:25 - database.schema_manager - ERROR - Failed to create constraint project_id_unique: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:25 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:25 - database.schema_manager - ERROR - Failed to create constraint organization_id_unique: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:25 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:25 - database.schema_manager - ERROR - Failed to create constraint document_id_unique: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:25 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:25 - database.schema_manager - ERROR - Failed to create constraint person_email_unique: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:25 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:25 - database.schema_manager - ERROR - Failed to create constraint organization_name_unique: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:25 - database.schema_manager - INFO - Creating database indexes...
+2025-09-01 21:40:26 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.schema_manager - ERROR - Failed to create index person_name_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.schema_manager - ERROR - Failed to create index person_role_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.schema_manager - ERROR - Failed to create index project_name_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.schema_manager - ERROR - Failed to create index project_type_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.schema_manager - ERROR - Failed to create index project_status_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.schema_manager - ERROR - Failed to create index organization_type_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.schema_manager - ERROR - Failed to create index document_type_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.schema_manager - ERROR - Failed to create index document_created_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:26 - database.schema_manager - INFO - Creating vector indexes...
+2025-09-01 21:40:27 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - database.schema_manager - ERROR - Failed to create vector index person_bio_vector: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - database.schema_manager - ERROR - Failed to create vector index project_concept_vector: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - database.schema_manager - ERROR - Failed to create vector index document_content_vector: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - database.schema_manager - ERROR - Failed to create vector index creative_concept_vector: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - database.schema_manager - WARNING - Core schema creation completed with some failures
+2025-09-01 21:40:27 - __main__ - ERROR - ❌ Database schema creation completed with errors
+2025-09-01 21:40:27 - __main__ - ERROR - Constraint creation errors:
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create constraint person_id_unique: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create constraint project_id_unique: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create constraint organization_id_unique: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create constraint document_id_unique: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create constraint person_email_unique: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create constraint organization_name_unique: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR - Index creation errors:
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create index person_name_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create index person_role_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create index project_name_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create index project_type_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create index project_status_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create index organization_type_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create index document_type_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create index document_created_index: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR - Vector index creation errors:
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create vector index person_bio_vector: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create vector index project_concept_vector: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create vector index document_content_vector: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - ERROR -   - Failed to create vector index creative_concept_vector: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:27 - __main__ - INFO - 🔍 Validating created schema...
+2025-09-01 21:40:27 - database.schema_manager - INFO - Validating database schema...
+2025-09-01 21:40:28 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:28 - database.schema_manager - ERROR - Failed to fetch constraints: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:28 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:28 - database.schema_manager - ERROR - Failed to fetch indexes: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:28 - database.neo4j_client - ERROR - Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:28 - database.schema_manager - ERROR - Failed to fetch vector indexes: Unexpected error during query execution: 'ResultSummary' object has no attribute 'records'
+2025-09-01 21:40:28 - database.schema_manager - INFO - Schema validation completed. Valid: False
+2025-09-01 21:40:28 - __main__ - WARNING - ⚠️  Schema validation found issues after creation
+2025-09-01 21:40:28 - database.connection_manager - INFO - Closing database connections...
+2025-09-01 21:40:28 - database.neo4j_client - INFO - Neo4j connection closed successfully
+2025-09-01 21:40:28 - database.connection_manager - INFO - Database connections closed
+2025-09-01 21:40:28 - __main__ - ERROR - ❌ Schema setup completed with errors
+2025-09-01 21:41:42 - __main__ - INFO - 🚀 OneVice Database Schema Setup Starting...
+2025-09-01 21:41:42 - __main__ - INFO - Loading configuration from environment variables
+2025-09-01 21:41:42 - __main__ - INFO - Database URI: neo4j+s://90fba3c7.databases.neo4j.io
+2025-09-01 21:41:42 - __main__ - INFO - Database: neo4j
+2025-09-01 21:41:42 - __main__ - INFO - Username: neo4j
+2025-09-01 21:41:42 - __main__ - INFO - Encrypted: True
+2025-09-01 21:41:42 - __main__ - INFO - 📡 Connecting to database...
+2025-09-01 21:41:42 - database.connection_manager - INFO - Connection manager initialized
+2025-09-01 21:41:42 - database.connection_manager - INFO - Initializing database connections...
+2025-09-01 21:41:42 - database.neo4j_client - INFO - Neo4j client initialized for database: neo4j
+2025-09-01 21:41:42 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j+s://90fba3c7.databases.neo4j.io
+2025-09-01 21:41:44 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-01 21:41:44 - database.connection_manager - INFO - Neo4j connection established
+2025-09-01 21:41:44 - database.schema_manager - INFO - Schema manager initialized
+2025-09-01 21:41:44 - database.connection_manager - INFO - Database initialization completed successfully in 2.07s
+2025-09-01 21:41:44 - __main__ - INFO - ✅ Database connection established
+2025-09-01 21:41:44 - __main__ - INFO - 🏗️  Creating database schema...
+2025-09-01 21:41:44 - database.schema_manager - INFO - Creating OneVice core schema...
+2025-09-01 21:41:44 - database.schema_manager - INFO - Creating database constraints...
+2025-09-01 21:41:45 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=3, name='person_id_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Person {id}), ownedIndex=2 )'.}
+2025-09-01 21:41:45 - database.schema_manager - ERROR - Failed to create constraint person_id_unique: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=3, name='person_id_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Person {id}), ownedIndex=2 )'.}
+2025-09-01 21:41:45 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=5, name='project_id_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Project {id}), ownedIndex=4 )'.}
+2025-09-01 21:41:45 - database.schema_manager - ERROR - Failed to create constraint project_id_unique: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=5, name='project_id_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Project {id}), ownedIndex=4 )'.}
+2025-09-01 21:41:45 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=7, name='organization_id_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Organization {id}), ownedIndex=6 )'.}
+2025-09-01 21:41:45 - database.schema_manager - ERROR - Failed to create constraint organization_id_unique: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=7, name='organization_id_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Organization {id}), ownedIndex=6 )'.}
+2025-09-01 21:41:46 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=9, name='document_id_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Document {id}), ownedIndex=8 )'.}
+2025-09-01 21:41:46 - database.schema_manager - ERROR - Failed to create constraint document_id_unique: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=9, name='document_id_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Document {id}), ownedIndex=8 )'.}
+2025-09-01 21:41:46 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=11, name='person_email_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Person {email}), ownedIndex=10 )'.}
+2025-09-01 21:41:46 - database.schema_manager - ERROR - Failed to create constraint person_email_unique: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=11, name='person_email_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Person {email}), ownedIndex=10 )'.}
+2025-09-01 21:41:46 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=13, name='organization_name_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Organization {name}), ownedIndex=12 )'.}
+2025-09-01 21:41:46 - database.schema_manager - ERROR - Failed to create constraint organization_name_unique: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=13, name='organization_name_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Organization {name}), ownedIndex=12 )'.}
+2025-09-01 21:41:46 - database.schema_manager - INFO - Creating database indexes...
+2025-09-01 21:41:46 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=14, name='person_name_index', type='RANGE', schema=(:Person {name}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:46 - database.schema_manager - ERROR - Failed to create index person_name_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=14, name='person_name_index', type='RANGE', schema=(:Person {name}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:46 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=15, name='person_role_index', type='RANGE', schema=(:Person {role}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:46 - database.schema_manager - ERROR - Failed to create index person_role_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=15, name='person_role_index', type='RANGE', schema=(:Person {role}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:46 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=16, name='project_name_index', type='RANGE', schema=(:Project {name}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:46 - database.schema_manager - ERROR - Failed to create index project_name_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=16, name='project_name_index', type='RANGE', schema=(:Project {name}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:47 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=17, name='project_type_index', type='RANGE', schema=(:Project {type}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:47 - database.schema_manager - ERROR - Failed to create index project_type_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=17, name='project_type_index', type='RANGE', schema=(:Project {type}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:47 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=18, name='project_status_index', type='RANGE', schema=(:Project {status}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:47 - database.schema_manager - ERROR - Failed to create index project_status_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=18, name='project_status_index', type='RANGE', schema=(:Project {status}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:47 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=19, name='organization_type_index', type='RANGE', schema=(:Organization {type}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:47 - database.schema_manager - ERROR - Failed to create index organization_type_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=19, name='organization_type_index', type='RANGE', schema=(:Organization {type}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:47 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=20, name='document_type_index', type='RANGE', schema=(:Document {type}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:47 - database.schema_manager - ERROR - Failed to create index document_type_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=20, name='document_type_index', type='RANGE', schema=(:Document {type}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:48 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=21, name='document_created_index', type='RANGE', schema=(:Document {created_at}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:48 - database.schema_manager - ERROR - Failed to create index document_created_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=21, name='document_created_index', type='RANGE', schema=(:Document {created_at}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:48 - database.schema_manager - INFO - Creating vector indexes...
+2025-09-01 21:41:48 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=22, name='person_bio_vector', type='VECTOR', schema=(:Person {bio_embedding}), indexProvider='vector-2.0' )'.}
+2025-09-01 21:41:48 - database.schema_manager - ERROR - Failed to create vector index person_bio_vector: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=22, name='person_bio_vector', type='VECTOR', schema=(:Person {bio_embedding}), indexProvider='vector-2.0' )'.}
+2025-09-01 21:41:48 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=23, name='project_concept_vector', type='VECTOR', schema=(:Project {concept_embedding}), indexProvider='vector-2.0' )'.}
+2025-09-01 21:41:48 - database.schema_manager - ERROR - Failed to create vector index project_concept_vector: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=23, name='project_concept_vector', type='VECTOR', schema=(:Project {concept_embedding}), indexProvider='vector-2.0' )'.}
+2025-09-01 21:41:48 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=24, name='document_content_vector', type='VECTOR', schema=(:Document {content_embedding}), indexProvider='vector-2.0' )'.}
+2025-09-01 21:41:48 - database.schema_manager - ERROR - Failed to create vector index document_content_vector: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=24, name='document_content_vector', type='VECTOR', schema=(:Document {content_embedding}), indexProvider='vector-2.0' )'.}
+2025-09-01 21:41:48 - database.neo4j_client - ERROR - Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=25, name='creative_concept_vector', type='VECTOR', schema=(:CreativeConcept {description_embedding}), indexProvider='vector-2.0' )'.}
+2025-09-01 21:41:48 - database.schema_manager - ERROR - Failed to create vector index creative_concept_vector: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=25, name='creative_concept_vector', type='VECTOR', schema=(:CreativeConcept {description_embedding}), indexProvider='vector-2.0' )'.}
+2025-09-01 21:41:48 - database.schema_manager - WARNING - Core schema creation completed with some failures
+2025-09-01 21:41:48 - __main__ - ERROR - ❌ Database schema creation completed with errors
+2025-09-01 21:41:48 - __main__ - ERROR - Constraint creation errors:
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create constraint person_id_unique: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=3, name='person_id_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Person {id}), ownedIndex=2 )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create constraint project_id_unique: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=5, name='project_id_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Project {id}), ownedIndex=4 )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create constraint organization_id_unique: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=7, name='organization_id_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Organization {id}), ownedIndex=6 )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create constraint document_id_unique: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=9, name='document_id_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Document {id}), ownedIndex=8 )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create constraint person_email_unique: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=11, name='person_email_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Person {email}), ownedIndex=10 )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create constraint organization_name_unique: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent constraint already exists, 'Constraint( id=13, name='organization_name_unique', type='NODE PROPERTY UNIQUENESS', schema=(:Organization {name}), ownedIndex=12 )'.}
+2025-09-01 21:41:48 - __main__ - ERROR - Index creation errors:
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create index person_name_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=14, name='person_name_index', type='RANGE', schema=(:Person {name}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create index person_role_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=15, name='person_role_index', type='RANGE', schema=(:Person {role}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create index project_name_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=16, name='project_name_index', type='RANGE', schema=(:Project {name}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create index project_type_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=17, name='project_type_index', type='RANGE', schema=(:Project {type}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create index project_status_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=18, name='project_status_index', type='RANGE', schema=(:Project {status}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create index organization_type_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=19, name='organization_type_index', type='RANGE', schema=(:Organization {type}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create index document_type_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=20, name='document_type_index', type='RANGE', schema=(:Document {type}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create index document_created_index: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=21, name='document_created_index', type='RANGE', schema=(:Document {created_at}), indexProvider='range-1.0' )'.}
+2025-09-01 21:41:48 - __main__ - ERROR - Vector index creation errors:
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create vector index person_bio_vector: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=22, name='person_bio_vector', type='VECTOR', schema=(:Person {bio_embedding}), indexProvider='vector-2.0' )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create vector index project_concept_vector: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=23, name='project_concept_vector', type='VECTOR', schema=(:Project {concept_embedding}), indexProvider='vector-2.0' )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create vector index document_content_vector: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=24, name='document_content_vector', type='VECTOR', schema=(:Document {content_embedding}), indexProvider='vector-2.0' )'.}
+2025-09-01 21:41:48 - __main__ - ERROR -   - Failed to create vector index creative_concept_vector: Neo4j query failed: {code: Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists} {message: An equivalent index already exists, 'Index( id=25, name='creative_concept_vector', type='VECTOR', schema=(:CreativeConcept {description_embedding}), indexProvider='vector-2.0' )'.}
+2025-09-01 21:41:48 - __main__ - INFO - 🔍 Validating created schema...
+2025-09-01 21:41:48 - database.schema_manager - INFO - Validating database schema...
+2025-09-01 21:41:48 - database.neo4j_client - ERROR - Unexpected error during query execution: 'SummaryCounters' object is not iterable
+2025-09-01 21:41:48 - database.schema_manager - ERROR - Failed to fetch constraints: Unexpected error during query execution: 'SummaryCounters' object is not iterable
+2025-09-01 21:41:49 - database.neo4j_client - ERROR - Unexpected error during query execution: 'SummaryCounters' object is not iterable
+2025-09-01 21:41:49 - database.schema_manager - ERROR - Failed to fetch indexes: Unexpected error during query execution: 'SummaryCounters' object is not iterable
+2025-09-01 21:41:49 - database.neo4j_client - ERROR - Unexpected error during query execution: 'SummaryCounters' object is not iterable
+2025-09-01 21:41:49 - database.schema_manager - ERROR - Failed to fetch vector indexes: Unexpected error during query execution: 'SummaryCounters' object is not iterable
+2025-09-01 21:41:49 - database.schema_manager - INFO - Schema validation completed. Valid: False
+2025-09-01 21:41:49 - __main__ - WARNING - ⚠️  Schema validation found issues after creation
+2025-09-01 21:41:49 - database.connection_manager - INFO - Closing database connections...
+2025-09-01 21:41:49 - database.neo4j_client - INFO - Neo4j connection closed successfully
+2025-09-01 21:41:49 - database.connection_manager - INFO - Database connections closed
+2025-09-01 21:41:49 - __main__ - ERROR - ❌ Schema setup completed with errors
+2025-09-02 23:54:27 - __main__ - INFO - 🚀 OneVice Database Schema Setup Starting...
+2025-09-02 23:54:27 - __main__ - INFO - Loading configuration from environment variables
+2025-09-02 23:54:27 - __main__ - INFO - Database URI: neo4j://localhost:7687
+2025-09-02 23:54:27 - __main__ - INFO - Database: neo4j
+2025-09-02 23:54:27 - __main__ - INFO - Username: neo4j
+2025-09-02 23:54:27 - __main__ - INFO - Encrypted: True
+2025-09-02 23:54:27 - __main__ - INFO - 📡 Connecting to database...
+2025-09-02 23:54:27 - database.connection_manager - INFO - Connection manager initialized
+2025-09-02 23:54:27 - database.connection_manager - INFO - Initializing database connections...
+2025-09-02 23:54:27 - database.neo4j_client - INFO - Neo4j client initialized for database: neo4j
+2025-09-02 23:54:27 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:27 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:27 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:27 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:27 - database.connection_manager - INFO - Neo4j connection established
+2025-09-02 23:54:27 - database.schema_manager - INFO - Schema manager initialized
+2025-09-02 23:54:27 - database.connection_manager - INFO - Database initialization completed successfully in 0.04s
+2025-09-02 23:54:27 - __main__ - INFO - ✅ Database connection established
+2025-09-02 23:54:27 - __main__ - INFO - 🏗️  Creating database schema...
+2025-09-02 23:54:27 - database.schema_manager - INFO - Creating OneVice core schema...
+2025-09-02 23:54:27 - database.schema_manager - INFO - Creating database constraints...
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.schema_manager - ERROR - Failed to create constraint person_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.schema_manager - ERROR - Failed to create constraint project_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.schema_manager - ERROR - Failed to create constraint organization_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.schema_manager - ERROR - Failed to create constraint document_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.schema_manager - ERROR - Failed to create constraint person_email_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.schema_manager - ERROR - Failed to create constraint organization_name_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.schema_manager - INFO - Creating database indexes...
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.schema_manager - ERROR - Failed to create index person_name_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.schema_manager - ERROR - Failed to create index person_role_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.schema_manager - ERROR - Failed to create index project_name_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.schema_manager - ERROR - Failed to create index project_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:28 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:28 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - ERROR - Failed to create index project_status_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - ERROR - Failed to create index organization_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - ERROR - Failed to create index document_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - ERROR - Failed to create index document_created_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - INFO - Creating vector indexes...
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - ERROR - Failed to create vector index person_bio_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - ERROR - Failed to create vector index project_concept_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - ERROR - Failed to create vector index document_content_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - ERROR - Failed to create vector index creative_concept_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - WARNING - Core schema creation completed with some failures
+2025-09-02 23:54:29 - __main__ - ERROR - ❌ Database schema creation completed with errors
+2025-09-02 23:54:29 - __main__ - ERROR - Constraint creation errors:
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create constraint person_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create constraint project_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create constraint organization_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create constraint document_id_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create constraint person_email_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create constraint organization_name_unique: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR - Index creation errors:
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create index person_name_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create index person_role_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create index project_name_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create index project_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create index project_status_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create index organization_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create index document_type_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create index document_created_index: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR - Vector index creation errors:
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create vector index person_bio_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create vector index project_concept_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create vector index document_content_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - ERROR -   - Failed to create vector index creative_concept_vector: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - __main__ - INFO - 🔍 Validating created schema...
+2025-09-02 23:54:29 - database.schema_manager - INFO - Validating database schema...
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - ERROR - Failed to fetch constraints: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - ERROR - Failed to fetch indexes: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connection lost, attempting reconnection...
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Connecting to Neo4j at neo4j://localhost:7687
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Neo4j connectivity check failed: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Neo4j connection established successfully
+2025-09-02 23:54:29 - neo4j - ERROR - Unable to retrieve routing information
+2025-09-02 23:54:29 - database.neo4j_client - ERROR - Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - ERROR - Failed to fetch vector indexes: Unexpected error during query execution: Unable to retrieve routing information
+2025-09-02 23:54:29 - database.schema_manager - INFO - Schema validation completed. Valid: False
+2025-09-02 23:54:29 - __main__ - WARNING - ⚠️  Schema validation found issues after creation
+2025-09-02 23:54:29 - database.connection_manager - INFO - Closing database connections...
+2025-09-02 23:54:29 - database.neo4j_client - INFO - Neo4j connection closed successfully
+2025-09-02 23:54:29 - database.connection_manager - INFO - Database connections closed
+2025-09-02 23:54:29 - __main__ - ERROR - ❌ Schema setup completed with errors

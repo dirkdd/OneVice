@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneVice WebSocket Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: #1a1a1b;
+            color: white;
+        }
+        .container { background: #2d2d2f; padding: 20px; border-radius: 8px; margin: 10px 0; }
+        .log { 
+            background: #000; 
+            color: #0f0; 
+            padding: 10px; 
+            height: 300px; 
+            overflow-y: auto; 
+            font-family: monospace;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        input[type="text"] { 
+            width: calc(100% - 120px); 
+            padding: 10px; 
+            margin: 5px;
+            background: #3d3d3f;
+            border: 1px solid #555;
+            color: white;
+            border-radius: 4px;
+        }
+        button { 
+            padding: 10px 20px; 
+            margin: 5px;
+            background: #007acc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover { background: #005a9a; }
+        button:disabled { background: #555; cursor: not-allowed; }
+        .status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status.connected { background: #004d00; color: #00ff00; }
+        .status.disconnected { background: #4d0000; color: #ff0000; }
+        .status.connecting { background: #4d4d00; color: #ffff00; }
+    </style>
+</head>
+<body>
+    <h1>OneVice WebSocket Authentication Test</h1>
+    
+    <div class="container">
+        <h3>Connection Status</h3>
+        <div id="status" class="status disconnected">Disconnected</div>
+        <button id="connectBtn" onclick="connect()">Connect</button>
+        <button id="disconnectBtn" onclick="disconnect()" disabled>Disconnect</button>
+    </div>
+
+    <div class="container">
+        <h3>Authentication</h3>
+        <input type="text" id="tokenInput" placeholder="Enter Clerk JWT token here" style="width: calc(100% - 20px);">
+        <button id="authBtn" onclick="authenticate()" disabled>Authenticate</button>
+        <p><small>Note: In development mode, any non-empty token will work for testing</small></p>
+    </div>
+
+    <div class="container">
+        <h3>Send Message</h3>
+        <input type="text" id="messageInput" placeholder="Type your message here" value="Hello OneVice AI!">
+        <button id="sendBtn" onclick="sendMessage()" disabled>Send Message</button>
+    </div>
+
+    <div class="container">
+        <h3>WebSocket Log</h3>
+        <div id="log" class="log">Ready to connect...\n</div>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <script>
+        let ws = null;
+        let authenticated = false;
+
+        function log(message) {
+            const logEl = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logEl.textContent += `[${timestamp}] ${message}\n`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function updateStatus(status, message) {
+            const statusEl = document.getElementById('status');
+            const connectBtn = document.getElementById('connectBtn');
+            const disconnectBtn = document.getElementById('disconnectBtn');
+            const authBtn = document.getElementById('authBtn');
+            const sendBtn = document.getElementById('sendBtn');
+
+            statusEl.className = `status ${status}`;
+            statusEl.textContent = message;
+
+            switch(status) {
+                case 'connected':
+                    connectBtn.disabled = true;
+                    disconnectBtn.disabled = false;
+                    authBtn.disabled = false;
+                    break;
+                case 'disconnected':
+                    connectBtn.disabled = false;
+                    disconnectBtn.disabled = true;
+                    authBtn.disabled = true;
+                    sendBtn.disabled = true;
+                    authenticated = false;
+                    break;
+                case 'connecting':
+                    connectBtn.disabled = true;
+                    disconnectBtn.disabled = true;
+                    authBtn.disabled = true;
+                    sendBtn.disabled = true;
+                    break;
+            }
+        }
+
+        function connect() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                log('Already connected');
+                return;
+            }
+
+            updateStatus('connecting', 'Connecting...');
+            log('Connecting to ws://localhost:8001/ws');
+
+            ws = new WebSocket('ws://localhost:8001/ws');
+
+            ws.onopen = function() {
+                log('✅ WebSocket connection established');
+                updateStatus('connected', 'Connected - Ready to authenticate');
+            };
+
+            ws.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    log(`📨 Received: ${JSON.stringify(data, null, 2)}`);
+                    
+                    if (data.type === 'auth_success') {
+                        authenticated = true;
+                        document.getElementById('sendBtn').disabled = false;
+                        updateStatus('connected', 'Connected & Authenticated');
+                        log('🔐 Authentication successful!');
+                    } else if (data.type === 'auth_error') {
+                        authenticated = false;
+                        document.getElementById('sendBtn').disabled = true;
+                        log('❌ Authentication failed: ' + data.data?.message);
+                    }
+                } catch (error) {
+                    log('⚠️ Error parsing message: ' + error);
+                    log('Raw message: ' + event.data);
+                }
+            };
+
+            ws.onclose = function(event) {
+                log(`🔌 WebSocket closed: Code ${event.code}, Reason: ${event.reason || 'None'}`);
+                updateStatus('disconnected', 'Disconnected');
+                authenticated = false;
+            };
+
+            ws.onerror = function(error) {
+                log('❌ WebSocket error: ' + error);
+                updateStatus('disconnected', 'Connection Error');
+            };
+        }
+
+        function disconnect() {
+            if (ws) {
+                ws.close(1000, 'User disconnect');
+                ws = null;
+            }
+        }
+
+        function authenticate() {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                log('❌ Not connected to WebSocket');
+                return;
+            }
+
+            const token = document.getElementById('tokenInput').value.trim();
+            if (!token) {
+                // For development testing, use a mock token
+                token = 'mock-jwt-token-for-development';
+                document.getElementById('tokenInput').value = token;
+            }
+
+            log(`🔐 Sending authentication with token: ${token.substring(0, 20)}...`);
+            
+            const authMessage = {
+                type: 'auth',
+                token: token
+            };
+
+            ws.send(JSON.stringify(authMessage));
+            log('📤 Authentication message sent');
+        }
+
+        function sendMessage() {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                log('❌ Not connected to WebSocket');
+                return;
+            }
+
+            if (!authenticated) {
+                log('❌ Not authenticated. Please authenticate first.');
+                return;
+            }
+
+            const message = document.getElementById('messageInput').value.trim();
+            if (!message) {
+                log('❌ Message cannot be empty');
+                return;
+            }
+
+            log(`📤 Sending message: ${message}`);
+            
+            const chatMessage = {
+                type: 'user_message',
+                content: message,
+                metadata: {
+                    timestamp: new Date().toISOString(),
+                    source: 'test_client'
+                }
+            };
+
+            ws.send(JSON.stringify(chatMessage));
+            
+            // Clear the message input
+            document.getElementById('messageInput').value = '';
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = 'Log cleared...\n';
+        }
+
+        // Allow Enter key to send messages
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Allow Enter key to authenticate
+        document.getElementById('tokenInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                authenticate();
+            }
+        });
+
+        // Auto-connect on page load
+        window.onload = function() {
+            log('WebSocket test client ready');
+            log('Click "Connect" to start testing the WebSocket connection');
+        };
+    </script>
+</body>
+</html>

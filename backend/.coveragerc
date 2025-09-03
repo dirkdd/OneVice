@@ -1,0 +1,136 @@
+# Coverage configuration for OneVice backend
+# https://coverage.readthedocs.io/en/stable/config.html
+
+[run]
+# Source code directories to measure
+source = app
+
+# Files to omit from coverage reporting
+omit = 
+    # Test files
+    */tests/*
+    *test_*.py
+    
+    # Virtual environment
+    venv/*
+    */venv/*
+    
+    # Migration files (auto-generated)
+    alembic/*
+    */alembic/*
+    
+    # Configuration and setup files
+    */conftest.py
+    setup.py
+    
+    # Development and debugging files
+    debug.py
+    temp*.py
+    
+    # __pycache__ and compiled files
+    */__pycache__/*
+    *.pyc
+    *.pyo
+    
+    # Main entry point (usually just imports)
+    app/main.py
+    main.py
+
+# Branch coverage (more thorough)
+branch = True
+
+# Include coverage of code inside def/class/if/else blocks
+include = app/*
+
+# Parallel processing
+parallel = True
+
+# Data file location
+data_file = .coverage
+
+[report]
+# Reporting precision
+precision = 2
+
+# Show missing lines
+show_missing = True
+
+# Skip covered files
+skip_covered = False
+
+# Skip empty files
+skip_empty = True
+
+# Sort report by coverage percentage (ascending)
+sort = Cover
+
+# Exclude lines from coverage reporting
+exclude_lines =
+    # Standard pragma
+    pragma: no cover
+    
+    # Don't complain about missing debug-only code
+    def __repr__
+    if self\.debug
+    
+    # Don't complain if tests don't hit defensive assertion code
+    raise AssertionError
+    raise NotImplementedError
+    
+    # Don't complain if non-runnable code isn't run
+    if 0:
+    if False:
+    if __name__ == .__main__.:
+    
+    # Don't complain about abstract methods
+    @(abc\.)?abstractmethod
+    
+    # Don't complain about type checking imports
+    if TYPE_CHECKING:
+    
+    # Don't complain about platform specific code
+    if sys.platform
+    
+    # Don't complain about logging statements in production
+    logger\.debug
+    
+    # Don't complain about pass statements
+    pass
+
+# Fail if coverage is below this percentage
+fail_under = 80
+
+[html]
+# HTML report directory
+directory = htmlcov
+
+# Title for HTML report
+title = OneVice Backend Coverage Report
+
+# Show contexts (which tests covered which lines)
+show_contexts = True
+
+# Skip files with 100% coverage in HTML report
+skip_covered = False
+
+# Skip empty files in HTML report
+skip_empty = True
+
+[xml]
+# XML report file
+output = coverage.xml
+
+[json]
+# JSON report file
+output = coverage.json
+
+# Show contexts in JSON report
+show_contexts = True
+
+[paths]
+# Map different paths to the same source (useful for CI/CD)
+source =
+    app/
+    */app/
+    */backend/app/
+    /app/

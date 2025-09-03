@@ -1,0 +1,36 @@
+{
+  "name": "onevice",
+  "version": "1.0.0",
+  "description": "OneVice AI-Powered Business Intelligence Hub",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=frontend",
+    "start": "npm run start --workspace=frontend",
+    "dev:backend": "cd backend && python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000",
+    "dev:full": "concurrently \"npm run dev\" \"npm run dev:backend\"",
+    "install:frontend": "npm install --workspace=frontend",
+    "install:backend": "cd backend && pip install -r requirements.txt",
+    "setup": "npm run install:frontend && npm run install:backend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onevice/onevice-platform.git"
+  },
+  "keywords": [
+    "AI",
+    "Business Intelligence",
+    "LangGraph",
+    "Next.js",
+    "FastAPI"
+  ],
+  "author": "OneVice Team",
+  "license": "MIT"
+}

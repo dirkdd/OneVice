@@ -1,0 +1,655 @@
+"""
+Memory-Enhanced Agent Orchestrator
+
+Multi-agent coordination system with advanced memory capabilities using
+LangMem and LangGraph checkpointing for sophisticated conversational AI.
+"""
+
+import asyncio
+import logging
+import uuid
+from typing import Dict, Any, List, Optional, Type, AsyncGenerator
+from datetime import datetime
+from enum import Enum
+
+import redis.asyncio as redis
+from redis.asyncio import Redis
+from langgraph.graph import StateGraph, START, END
+from langgraph.graph.state import CompiledStateGraph
+from langgraph.types import StateSnapshot
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+from langmem import create_manage_memory_tool, create_search_memory_tool
+
+from ..config import AIConfig, AgentType
+from ..llm.router import LLMRouter
+from ..graph.connection import Neo4jClient
+from ..services.vector_service import VectorSearchService
+from ..services.knowledge_service import KnowledgeGraphService
+from ..agents.base_agent import BaseAgent
+from ..agents.sales_agent import SalesIntelligenceAgent
+from ..agents.talent_agent import TalentAcquisitionAgent
+from ..agents.analytics_agent import LeadershipAnalyticsAgent
+from ..memory.modern_langmem_manager import ModernLangMemManager
+from .checkpoint_manager import CheckpointManager
+from ...core.exceptions import AIProcessingError
+
+logger = logging.getLogger(__name__)
+
+
+class ConversationState:
+    """State structure for LangGraph conversation management"""
+    
+    messages: List[BaseMessage]
+    user_id: str
+    conversation_id: str
+    current_agent: Optional[str]
+    agent_context: Dict[str, Any]
+    memory_context: Dict[str, Any]
+    routing_history: List[Dict[str, Any]]
+    metadata: Dict[str, Any]
+
+
+class MemoryOrchestrator:
+    """
+    Advanced multi-agent orchestrator with memory capabilities
+    
+    Features:
+    - Memory-aware agent routing
+    - LangGraph-based conversation flow
+    - Checkpointing for fault tolerance
+    - Background memory processing
+    """
+    
+    def __init__(self, config: AIConfig):
+        self.config = config
+        
+        # Initialize core services
+        self.llm_router = LLMRouter(config)
+        self.neo4j_client = Neo4jClient(config)
+        self.redis_client = redis.from_url(config.redis_url)
+        
+        # Initialize enhanced services
+        self.vector_service = VectorSearchService(
+            config, self.llm_router, self.neo4j_client, self.redis_client
+        )
+        self.knowledge_service = KnowledgeGraphService(
+            config, self.neo4j_client, self.vector_service
+        )
+        
+        # Initialize memory system
+        self.memory_manager = ModernLangMemManager(
+            config, self.neo4j_client, self.vector_service
+        )
+        
+        # Initialize checkpoint system
+        self.checkpoint_manager = CheckpointManager(config)
+        
+        # Initialize agents with memory tools
+        self.agents: Dict[AgentType, BaseAgent] = {}
+        self._compiled_graph: Optional[CompiledStateGraph] = None
+        
+        # Background processing
+        self._background_tasks = set()
+        
+    async def initialize(self) -> bool:
+        """Initialize all components of the memory orchestrator"""
+        
+        try:
+            # Initialize memory system
+            await self.memory_manager.initialize()
+            
+            # Initialize checkpoint system
+            await self.checkpoint_manager.initialize()
+            
+            # Initialize agents
+            await self._initialize_memory_agents()
+            
+            # Build conversation graph
+            await self._build_conversation_graph()
+            
+            logger.info("Memory orchestrator initialized successfully")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Memory orchestrator initialization failed: {e}")
+            raise AIProcessingError(f"Memory orchestrator initialization failed: {e}")
+    
+    async def _initialize_memory_agents(self) -> None:
+        """Initialize agents with memory tools"""
+        
+        # Create memory tools for each agent
+        memory_tools = {
+            "manage_memory": create_manage_memory_tool(
+                namespace=("memories", "{user_id}"),
+                store=self.memory_manager.store
+            ),
+            "search_memory": create_search_memory_tool(
+                namespace=("memories", "{user_id}"),
+                store=self.memory_manager.store
+            )
+        }
+        
+        # Initialize agents with memory capabilities
+        self.agents[AgentType.SALES] = SalesIntelligenceAgent(
+            config=self.config,
+            llm_router=self.llm_router,
+            knowledge_service=self.knowledge_service,
+            redis_client=self.redis_client,
+            memory_tools=memory_tools
+        )
+        
+        self.agents[AgentType.TALENT] = TalentAcquisitionAgent(
+            config=self.config,
+            llm_router=self.llm_router,
+            knowledge_service=self.knowledge_service,
+            redis_client=self.redis_client,
+            memory_tools=memory_tools
+        )
+        
+        self.agents[AgentType.ANALYTICS] = LeadershipAnalyticsAgent(
+            config=self.config,
+            llm_router=self.llm_router,
+            knowledge_service=self.knowledge_service,
+            redis_client=self.redis_client,
+            memory_tools=memory_tools
+        )
+        
+        logger.info(f"Initialized {len(self.agents)} memory-enabled agents")
+    
+    async def _build_conversation_graph(self) -> None:
+        """Build LangGraph conversation flow with memory integration"""
+        
+        # Define conversation flow
+        workflow = StateGraph(ConversationState)
+        
+        # Add nodes
+        workflow.add_node("load_memory", self._load_memory_context)
+        workflow.add_node("route_agent", self._route_to_agent)
+        workflow.add_node("sales_agent", self._sales_agent_node)
+        workflow.add_node("talent_agent", self._talent_agent_node)
+        workflow.add_node("analytics_agent", self._analytics_agent_node)
+        workflow.add_node("synthesize", self._synthesize_response)
+        workflow.add_node("save_memory", self._save_memory_context)
+        
+        # Define edges
+        workflow.add_edge(START, "load_memory")
+        workflow.add_edge("load_memory", "route_agent")
+        
+        # Conditional routing from route_agent
+        workflow.add_conditional_edges(
+            "route_agent",
+            self._determine_agent_routing,
+            {
+                "sales": "sales_agent",
+                "talent": "talent_agent", 
+                "analytics": "analytics_agent",
+                "multi": "synthesize"
+            }
+        )
+        
+        # All agents flow to synthesis
+        workflow.add_edge("sales_agent", "synthesize")
+        workflow.add_edge("talent_agent", "synthesize")
+        workflow.add_edge("analytics_agent", "synthesize")
+        
+        # Final steps
+        workflow.add_edge("synthesize", "save_memory")
+        workflow.add_edge("save_memory", END)
+        
+        # Compile with checkpointing
+        self._compiled_graph = await self.checkpoint_manager.create_compiled_graph(
+            workflow,
+            interrupt_before=["save_memory"]  # Allow inspection before saving
+        )
+    
+    async def chat_with_memory(
+        self,
+        user_id: str,
+        message: str,
+        conversation_id: Optional[str] = None,
+        preferred_agent: Optional[AgentType] = None,
+        resume_from_checkpoint: bool = True
+    ) -> Dict[str, Any]:
+        """Enhanced chat with memory and checkpointing"""
+        
+        try:
+            # Generate conversation ID if not provided
+            if not conversation_id:
+                conversation_id = f"conv_{user_id}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+            
+            # Create thread configuration
+            thread_config = {"configurable": {"thread_id": conversation_id}}
+            
+            # Prepare initial state
+            initial_state = ConversationState(
+                messages=[HumanMessage(content=message)],
+                user_id=user_id,
+                conversation_id=conversation_id,
+                current_agent=preferred_agent.value if preferred_agent else None,
+                agent_context={},
+                memory_context={},
+                routing_history=[],
+                metadata={
+                    "start_time": datetime.utcnow().isoformat(),
+                    "preferred_agent": preferred_agent.value if preferred_agent else None
+                }
+            )
+            
+            # Resume from checkpoint if requested
+            if resume_from_checkpoint:
+                checkpoint = await self.checkpoint_manager.resume_conversation(
+                    conversation_id, self._compiled_graph
+                )
+                if checkpoint and checkpoint.values:
+                    # Append new message to existing conversation
+                    existing_state = checkpoint.values
+                    existing_state.messages.append(HumanMessage(content=message))
+                    initial_state = existing_state
+            
+            # Save conversation metadata
+            await self.checkpoint_manager.save_conversation_metadata(
+                conversation_id,
+                user_id,
+                [agent.value for agent in self.agents.keys()],
+                initial_state.metadata
+            )
+            
+            # Process conversation through graph
+            result = await self._compiled_graph.ainvoke(
+                initial_state,
+                config=thread_config
+            )
+            
+            # Extract response
+            ai_messages = [msg for msg in result.messages if isinstance(msg, AIMessage)]
+            response_content = ai_messages[-1].content if ai_messages else "No response generated"
+            
+            # Start background memory processing
+            self._schedule_background_memory_processing(
+                conversation_id,
+                user_id,
+                result.messages,
+                [result.current_agent] if result.current_agent else []
+            )
+            
+            # Update conversation metadata
+            await self.checkpoint_manager.update_conversation(
+                conversation_id,
+                user_id,
+                len(result.messages)
+            )
+            
+            return {
+                "content": response_content,
+                "conversation_id": conversation_id,
+                "agent_type": result.current_agent,
+                "routing": {
+                    "strategy": "memory_enhanced",
+                    "agents_used": [result.current_agent] if result.current_agent else [],
+                    "routing_history": result.routing_history
+                },
+                "memory_context": result.memory_context,
+                "timestamp": datetime.utcnow().isoformat()
+            }
+            
+        except Exception as e:
+            logger.error(f"Memory-enhanced chat failed: {e}")
+            raise AIProcessingError(f"Memory-enhanced chat failed: {e}")
+    
+    async def _load_memory_context(self, state: ConversationState) -> ConversationState:
+        """Load relevant memories for the conversation"""
+        
+        try:
+            # Get latest user message
+            user_messages = [msg for msg in state.messages if isinstance(msg, HumanMessage)]
+            latest_query = user_messages[-1].content if user_messages else ""
+            
+            # Build memory context
+            memory_context = await self.memory_manager.build_memory_context(
+                user_id=state.user_id,
+                current_query=latest_query,
+                conversation_id=state.conversation_id
+            )
+            
+            state.memory_context = memory_context
+            
+            logger.debug(f"Loaded memory context with {memory_context.get('total_memories', 0)} memories")
+            return state
+            
+        except Exception as e:
+            logger.error(f"Failed to load memory context: {e}")
+            state.memory_context = {"error": str(e)}
+            return state
+    
+    async def _route_to_agent(self, state: ConversationState) -> ConversationState:
+        """Route conversation to appropriate agent based on memory and content"""
+        
+        try:
+            # Get latest user message
+            user_messages = [msg for msg in state.messages if isinstance(msg, HumanMessage)]
+            query = user_messages[-1].content if user_messages else ""
+            
+            # Use preferred agent if specified
+            if state.current_agent:
+                selected_agent = state.current_agent
+                routing_reason = "user_preference"
+            else:
+                # Memory-informed routing
+                selected_agent, routing_reason = await self._memory_informed_routing(
+                    query, state.memory_context, state.user_id
+                )
+            
+            state.current_agent = selected_agent
+            state.routing_history.append({
+                "timestamp": datetime.utcnow().isoformat(),
+                "agent": selected_agent,
+                "reason": routing_reason,
+                "query_excerpt": query[:100]
+            })
+            
+            logger.debug(f"Routed to {selected_agent} agent ({routing_reason})")
+            return state
+            
+        except Exception as e:
+            logger.error(f"Agent routing failed: {e}")
+            # Default to sales agent
+            state.current_agent = AgentType.SALES.value
+            return state
+    
+    async def _memory_informed_routing(
+        self,
+        query: str,
+        memory_context: Dict[str, Any],
+        user_id: str
+    ) -> tuple[str, str]:
+        """Route based on memory patterns and query content"""
+        
+        # Check procedural memories for routing patterns
+        behavioral_patterns = memory_context.get("behavioral_patterns", [])
+        
+        for pattern in behavioral_patterns:
+            if pattern.get("success_rate", 0) > 0.8:
+                # Check if pattern trigger matches current query
+                trigger = pattern.get("trigger", "").lower()
+                if any(keyword in query.lower() for keyword in trigger.split()):
+                    # Extract agent from action
+                    action = pattern.get("action", "").lower()
+                    if "sales" in action:
+                        return AgentType.SALES.value, "procedural_memory"
+                    elif "talent" in action:
+                        return AgentType.TALENT.value, "procedural_memory"
+                    elif "analytics" in action:
+                        return AgentType.ANALYTICS.value, "procedural_memory"
+        
+        # Fallback to semantic routing
+        query_lower = query.lower()
+        
+        sales_keywords = ["lead", "sales", "revenue", "client", "deal"]
+        talent_keywords = ["talent", "hire", "crew", "skills", "team"]
+        analytics_keywords = ["analytics", "performance", "metrics", "report"]
+        
+        if any(keyword in query_lower for keyword in sales_keywords):
+            return AgentType.SALES.value, "keyword_matching"
+        elif any(keyword in query_lower for keyword in talent_keywords):
+            return AgentType.TALENT.value, "keyword_matching"
+        elif any(keyword in query_lower for keyword in analytics_keywords):
+            return AgentType.ANALYTICS.value, "keyword_matching"
+        else:
+            return AgentType.SALES.value, "default"
+    
+    def _determine_agent_routing(self, state: ConversationState) -> str:
+        """Determine routing for conditional edges"""
+        
+        current_agent = state.current_agent
+        
+        if current_agent == AgentType.SALES.value:
+            return "sales"
+        elif current_agent == AgentType.TALENT.value:
+            return "talent"
+        elif current_agent == AgentType.ANALYTICS.value:
+            return "analytics"
+        else:
+            return "multi"
+    
+    async def _sales_agent_node(self, state: ConversationState) -> ConversationState:
+        """Sales agent processing node"""
+        
+        try:
+            agent = self.agents[AgentType.SALES]
+            
+            # Prepare context with memories
+            user_context = {
+                "user_id": state.user_id,
+                "conversation_id": state.conversation_id,
+                "memory_context": state.memory_context,
+                "role": "user"
+            }
+            
+            # Get agent response
+            response = await agent.chat(
+                message=state.messages[-1].content,
+                user_context=user_context,
+                conversation_id=state.conversation_id
+            )
+            
+            # Add response to messages
+            state.messages.append(AIMessage(content=response["content"]))
+            state.agent_context["sales"] = response.get("metadata", {})
+            
+            return state
+            
+        except Exception as e:
+            logger.error(f"Sales agent processing failed: {e}")
+            state.messages.append(AIMessage(content=f"Sales agent error: {str(e)}"))
+            return state
+    
+    async def _talent_agent_node(self, state: ConversationState) -> ConversationState:
+        """Talent agent processing node"""
+        
+        try:
+            agent = self.agents[AgentType.TALENT]
+            
+            user_context = {
+                "user_id": state.user_id,
+                "conversation_id": state.conversation_id,
+                "memory_context": state.memory_context,
+                "role": "user"
+            }
+            
+            response = await agent.chat(
+                message=state.messages[-1].content,
+                user_context=user_context,
+                conversation_id=state.conversation_id
+            )
+            
+            state.messages.append(AIMessage(content=response["content"]))
+            state.agent_context["talent"] = response.get("metadata", {})
+            
+            return state
+            
+        except Exception as e:
+            logger.error(f"Talent agent processing failed: {e}")
+            state.messages.append(AIMessage(content=f"Talent agent error: {str(e)}"))
+            return state
+    
+    async def _analytics_agent_node(self, state: ConversationState) -> ConversationState:
+        """Analytics agent processing node"""
+        
+        try:
+            agent = self.agents[AgentType.ANALYTICS]
+            
+            user_context = {
+                "user_id": state.user_id,
+                "conversation_id": state.conversation_id,
+                "memory_context": state.memory_context,
+                "role": "user"
+            }
+            
+            response = await agent.chat(
+                message=state.messages[-1].content,
+                user_context=user_context,
+                conversation_id=state.conversation_id
+            )
+            
+            state.messages.append(AIMessage(content=response["content"]))
+            state.agent_context["analytics"] = response.get("metadata", {})
+            
+            return state
+            
+        except Exception as e:
+            logger.error(f"Analytics agent processing failed: {e}")
+            state.messages.append(AIMessage(content=f"Analytics agent error: {str(e)}"))
+            return state
+    
+    async def _synthesize_response(self, state: ConversationState) -> ConversationState:
+        """Synthesize final response"""
+        
+        # For single agent responses, no synthesis needed
+        if len([msg for msg in state.messages if isinstance(msg, AIMessage)]) == 1:
+            return state
+        
+        # Multi-agent synthesis (simplified implementation)
+        ai_messages = [msg for msg in state.messages if isinstance(msg, AIMessage)]
+        if len(ai_messages) > 1:
+            combined_content = "\n\n".join([msg.content for msg in ai_messages])
+            synthesized_message = AIMessage(content=f"Combined insights:\\n{combined_content}")
+            
+            # Replace multiple AI messages with synthesized version
+            human_messages = [msg for msg in state.messages if isinstance(msg, HumanMessage)]
+            state.messages = human_messages + [synthesized_message]
+        
+        return state
+    
+    async def _save_memory_context(self, state: ConversationState) -> ConversationState:
+        """Save conversation context to memory (placeholder for checkpoint interrupt)"""
+        
+        # This node allows for inspection before memory saving
+        # Actual memory saving happens in background processing
+        
+        state.metadata["processing_complete"] = datetime.utcnow().isoformat()
+        return state
+    
+    def _schedule_background_memory_processing(
+        self,
+        conversation_id: str,
+        user_id: str,
+        messages: List[BaseMessage],
+        agent_types: List[str]
+    ) -> None:
+        """Schedule background memory extraction and processing"""
+        
+        task = asyncio.create_task(
+            self._background_memory_processing(
+                conversation_id, user_id, messages, agent_types
+            )
+        )
+        
+        self._background_tasks.add(task)
+        task.add_done_callback(self._background_tasks.discard)
+    
+    async def _background_memory_processing(
+        self,
+        conversation_id: str,
+        user_id: str,
+        messages: List[BaseMessage],
+        agent_types: List[str]
+    ) -> None:
+        """Background memory extraction and consolidation"""
+        
+        try:
+            # Extract memories from conversation
+            memory_ids = await self.memory_manager.extract_conversation_memories(
+                conversation_id=conversation_id,
+                user_id=user_id,
+                messages=messages,
+                agent_types=agent_types
+            )
+            
+            logger.info(f"Background processing: extracted {len(memory_ids)} memories")
+            
+            # Update memory access patterns
+            if memory_ids:
+                await self.memory_manager.update_memory_access(memory_ids)
+            
+            # Periodic memory consolidation
+            if len(memory_ids) > 10:  # Consolidate if many memories extracted
+                consolidated = await self.memory_manager.consolidate_memories(user_id)
+                if consolidated > 0:
+                    logger.info(f"Consolidated {consolidated} memories for user {user_id}")
+            
+        except Exception as e:
+            logger.error(f"Background memory processing failed: {e}")
+    
+    async def get_conversation_history(
+        self,
+        conversation_id: str,
+        user_id: str,
+        include_checkpoints: bool = False
+    ) -> Dict[str, Any]:
+        """Get conversation history with optional checkpoint data"""
+        
+        try:
+            # Get conversation metadata
+            metadata = await self.checkpoint_manager.get_conversation_metadata(conversation_id)
+            
+            if not metadata:
+                return {"error": "Conversation not found"}
+            
+            result = {
+                "conversation_id": conversation_id,
+                "metadata": metadata,
+                "messages": []
+            }
+            
+            # Get checkpoints if requested
+            if include_checkpoints:
+                checkpoints = await self.checkpoint_manager.get_conversation_history(
+                    conversation_id
+                )
+                
+                if checkpoints:
+                    latest_checkpoint = checkpoints[0]
+                    if hasattr(latest_checkpoint, 'values') and latest_checkpoint.values:
+                        result["messages"] = [
+                            {
+                                "type": "human" if isinstance(msg, HumanMessage) else "ai",
+                                "content": msg.content,
+                                "timestamp": getattr(msg, 'timestamp', None)
+                            }
+                            for msg in latest_checkpoint.values.messages
+                        ]
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Failed to get conversation history: {e}")
+            return {"error": str(e)}
+    
+    async def cleanup(self) -> None:
+        """Cleanup orchestrator resources"""
+        
+        try:
+            # Cancel background tasks
+            for task in self._background_tasks:
+                task.cancel()
+            
+            # Wait for tasks to complete
+            if self._background_tasks:
+                await asyncio.gather(*self._background_tasks, return_exceptions=True)
+            
+            # Cleanup managers
+            await self.checkpoint_manager.close()
+            
+            # Cleanup agents
+            for agent in self.agents.values():
+                if hasattr(agent, 'cleanup'):
+                    await agent.cleanup()
+            
+            # Cleanup connections
+            await self.neo4j_client.close()
+            await self.redis_client.close()
+            
+            logger.info("Memory orchestrator cleanup completed")
+            
+        except Exception as e:
+            logger.error(f"Memory orchestrator cleanup failed: {e}")
