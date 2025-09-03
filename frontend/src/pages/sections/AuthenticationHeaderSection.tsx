@@ -5,6 +5,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { FIGMA_ASSETS } from "@/utils/assets";
 
 export const AuthenticationHeaderSection = (): JSX.Element => {
   const navigationItems = [
@@ -39,7 +40,7 @@ export const AuthenticationHeaderSection = (): JSX.Element => {
             <img
               className="w-[34px] h-[42px]"
               alt="Button"
-              src="/figmaAssets/button.svg"
+              src={FIGMA_ASSETS.BUTTONS.PRIMARY}
             />
 
             <div className="w-2 h-2 ml-4 bg-[#dfff00] rounded-full opacity-50" />

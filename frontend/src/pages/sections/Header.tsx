@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Bell } from "lucide-react";
+import { FIGMA_ASSETS } from "@/utils/assets";
 
 export const Header = (): JSX.Element => {
   return (
@@ -13,7 +14,7 @@ export const Header = (): JSX.Element => {
               One
             </div>
             <img 
-              src="/figmaAssets/image-1.png"
+              src={FIGMA_ASSETS.VICE_LOGO}
               alt="VICE Logo" 
               className="h-8 object-contain -mt-1"
             />

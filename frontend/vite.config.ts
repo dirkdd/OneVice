@@ -12,6 +12,8 @@ export default defineConfig({
       "@assets": path.resolve(__dirname, "src/assets"),
     },
   },
+  publicDir: "public", // Explicitly set public directory
+  base: "/", // Ensure root-relative paths work in production
   server: {
     port: 5173,
     proxy: {

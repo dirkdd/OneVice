@@ -7,7 +7,7 @@ services:
     name: onevice-frontend
     buildCommand: |
       cd frontend
-      npm ci
+      npm ci --production=false
       npm run build
     publishDir: ./frontend/dist
     branch: master

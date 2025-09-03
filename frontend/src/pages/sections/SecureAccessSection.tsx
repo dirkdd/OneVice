@@ -7,20 +7,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FIGMA_ASSETS } from "@/utils/assets";
 
 const securityFeatures = [
   {
-    icon: "/figmaAssets/div-2.svg",
+    icon: FIGMA_ASSETS.SECURITY_ICONS.ENTERPRISE,
     title: "Enterprise Security",
     description: "Role-based access control",
   },
   {
-    icon: "/figmaAssets/div-1.svg",
+    icon: FIGMA_ASSETS.SECURITY_ICONS.ENCRYPTION,
     title: "Encrypted Authentication",
     description: "Multi-factor verification",
   },
   {
-    icon: "/figmaAssets/div.svg",
+    icon: FIGMA_ASSETS.SECURITY_ICONS.SESSION,
     title: "Session Management",
     description: "Automatic timeout protection",
   },
@@ -298,7 +299,7 @@ export const AuthenticateCard = (): JSX.Element => {
               {isLoading ? "AUTHENTICATING..." : isRedirecting ? "REDIRECTING..." : "ACCESS HUB"}
               {!isLoading && !isRedirecting && (
                 <img
-                  src="/figmaAssets/i-1.svg"
+                  src={FIGMA_ASSETS.UI_ELEMENTS.ICON_2}
                   alt=""
                   className="w-4 h-[21px] ml-2"
                 />
@@ -315,7 +316,7 @@ export const AuthenticateCard = (): JSX.Element => {
               <Card className="flex-1 bg-[#1e1e1ea6] border-[#ffffff1a] rounded-lg">
                 <CardContent className="flex items-center justify-center p-3">
                   <img
-                    src="/figmaAssets/image-6.png"
+                    src={FIGMA_ASSETS.UI_ELEMENTS.ALTERNATIVE_LOGIN}
                     alt="Alternative login"
                     className="w-[61px] h-5 object-cover brightness-0 invert"
                   />
@@ -325,7 +326,7 @@ export const AuthenticateCard = (): JSX.Element => {
               <Card className="flex-1 bg-[#1e1e1ea6] border-[#ffffff1a] rounded-lg">
                 <CardContent className="flex items-center justify-center gap-2 p-3">
                   <img
-                    src="/figmaAssets/i.svg"
+                    src={FIGMA_ASSETS.UI_ELEMENTS.ICON_1}
                     alt=""
                     className="w-4 h-6"
                   />

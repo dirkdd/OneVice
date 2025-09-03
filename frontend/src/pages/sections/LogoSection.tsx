@@ -1,25 +1,26 @@
 import React from "react";
 import { InkReveal, HolographicStagger } from "@/animations/components";
+import { FIGMA_ASSETS } from "@/utils/assets";
 
 export const LogoSection = (): JSX.Element => {
   const brandLogos = [
     {
-      src: "/figmaAssets/image-4.png",
+      src: FIGMA_ASSETS.BRAND_LOGO_1,
       alt: "Brand logo 1",
       className: "w-[77px] h-[34px]",
     },
     {
-      src: "/figmaAssets/image-3.png",
+      src: FIGMA_ASSETS.BRAND_LOGO_2,
       alt: "Brand logo 2",
       className: "w-24 h-[27px]",
     },
     {
-      src: "/figmaAssets/image-5.png",
+      src: FIGMA_ASSETS.BRAND_LOGO_3,
       alt: "Brand logo 3",
       className: "w-[87px] h-[34px]",
     },
     {
-      src: "/figmaAssets/image-2.png",
+      src: FIGMA_ASSETS.BRAND_LOGO_4,
       alt: "Brand logo 4",
       className: "w-[92px] h-[34px]",
     },
@@ -51,7 +52,7 @@ export const LogoSection = (): JSX.Element => {
             <img
               className="w-[350px] h-28 object-cover"
               alt="VICE logo"
-              src="/figmaAssets/image-1.png"
+              src={FIGMA_ASSETS.VICE_LOGO}
             />
           </InkReveal>
         </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { GlitchEffect } from "@/animations/components";
+import { FIGMA_ASSETS } from "@/utils/assets";
 
 export const XImageSection = (): JSX.Element => {
   return (
@@ -12,7 +13,7 @@ export const XImageSection = (): JSX.Element => {
         className="cursor-pointer"
       >
         <img 
-          src="/figmaAssets/x-branded.png"
+          src={FIGMA_ASSETS.UI_ELEMENTS.X_BRANDED}
           alt="Branded X"
           className="w-[200px] md:w-[250px] lg:w-[296px] object-contain"
         />

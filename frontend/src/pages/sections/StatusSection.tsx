@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { FIGMA_ASSETS } from "@/utils/assets";
 
 export const StatusSection = (): JSX.Element => {
   const statusItems = [
@@ -49,7 +50,7 @@ export const StatusSection = (): JSX.Element => {
             <img
               className="w-3 h-4"
               alt="Button"
-              src="/figmaAssets/button-2.svg"
+              src={FIGMA_ASSETS.BUTTONS.SECONDARY}
             />
           </Button>
         </div>
