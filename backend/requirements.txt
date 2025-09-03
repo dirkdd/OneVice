@@ -40,7 +40,7 @@ langchain-neo4j>=0.1.0
 langgraph>=0.6.6
 langgraph-checkpoint>=1.0.0
 langgraph-checkpoint-redis>=0.1.0
-langmem>=0.1.0
+langmem>=0.0.29
 langsmith>=0.1.0
 openai>=1.10.0
 
@@ -53,12 +53,12 @@ websockets>=12.0
 # Monitoring and logging
 structlog>=23.2.0
 
-# Development and testing - Updated versions
-pytest>=7.4.0
-pytest-asyncio>=0.23.0
-black>=23.11.0
-flake8>=6.1.0
-mypy>=1.8.0
+# Development and testing - Updated versions (removed for production build)
+# pytest>=7.4.0
+# pytest-asyncio>=0.23.0
+# black>=23.11.0
+# flake8>=6.1.0
+# mypy>=1.8.0
 
 # Session middleware
 itsdangerous>=2.1.2
