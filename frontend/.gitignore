@@ -87,9 +87,9 @@ out/
 .nuxt
 dist/
 
-# Gatsby files
+# Gatsby files (not used in this Vite project, but keeping for reference)
 .cache/
-public
+# public - REMOVED: We need public/figmaAssets and favicon files in git
 
 # Storybook build outputs
 .out
