@@ -245,12 +245,13 @@ def create_application() -> FastAPI:
         allow_headers=["*"],
     )
     
-    # Add security middleware (disable TrustedHostMiddleware in production for Render)
-    if os.getenv("ENVIRONMENT", "development") != "production":
-        app.add_middleware(
-            TrustedHostMiddleware,
-            allowed_hosts=os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
-        )
+    # Add security middleware - TrustedHostMiddleware temporarily disabled for Render deployment
+    # TODO: Re-enable with proper host configuration after deployment is working
+    # if os.getenv("ENVIRONMENT", "development") != "production":
+    #     app.add_middleware(
+    #         TrustedHostMiddleware,
+    #         allowed_hosts=os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    #     )
     
     # Add compression
     app.add_middleware(GZipMiddleware, minimum_size=1000)
