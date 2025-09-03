@@ -88,6 +88,8 @@ services:
         sync: false
       - key: CLERK_WEBHOOK_SECRET
         sync: false
+      - key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+        sync: false
       - key: OKTA_CLIENT_ID
         sync: false
       - key: OKTA_CLIENT_SECRET

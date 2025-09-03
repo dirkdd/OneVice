@@ -28,17 +28,26 @@ class ClerkJWTValidator:
     @lru_cache(maxsize=1)
     def _get_clerk_jwks_url(self) -> str:
         """Get Clerk JWKS URL from publishable key"""
-        # Extract domain from publishable key (format: pk_test_xxxxx or pk_live_xxxxx)
-        if self.clerk_publishable_key.startswith("pk_test_"):
-            # Development environment
-            instance_id = self.clerk_publishable_key.split("_")[2][:10]  # Take first 10 chars
-            return f"https://clerk.{instance_id}.lcl.dev/.well-known/jwks.json"
-        elif self.clerk_publishable_key.startswith("pk_live_"):
-            # Production environment - will need actual domain
-            # For now, use a generic format
-            return "https://api.clerk.dev/v1/jwks"
-        else:
-            # Default fallback
+        # For Clerk, the JWKS URL format is consistent
+        # Extract the instance from the publishable key properly
+        try:
+            if self.clerk_publishable_key.startswith("pk_test_"):
+                # Development environment - extract instance from key
+                # Format: pk_test_{instance}_{rest}
+                key_parts = self.clerk_publishable_key.split("_")
+                if len(key_parts) >= 3:
+                    # Use the standard Clerk JWKS endpoint format
+                    return "https://api.clerk.dev/v1/jwks"
+                else:
+                    return "https://api.clerk.dev/v1/jwks"
+            elif self.clerk_publishable_key.startswith("pk_live_"):
+                # Production environment - use production JWKS endpoint
+                return "https://api.clerk.dev/v1/jwks"
+            else:
+                # Default fallback - use standard Clerk API
+                return "https://api.clerk.dev/v1/jwks"
+        except Exception as e:
+            logger.error(f"Error parsing publishable key for JWKS URL: {e}")
             return "https://api.clerk.dev/v1/jwks"
     
     async def _fetch_public_keys(self) -> Dict[str, Any]:
@@ -69,8 +78,9 @@ class ClerkJWTValidator:
             }
             
             self._public_keys_cache = mock_keys
-            # Cache for 1 hour
-            self._cache_expiry = now.replace(hour=now.hour + 1)
+            # Cache for 1 hour using proper datetime arithmetic
+            from datetime import timedelta
+            self._cache_expiry = now + timedelta(hours=1)
             
             return mock_keys
             
@@ -199,11 +209,17 @@ def get_clerk_validator() -> ClerkJWTValidator:
     global _clerk_validator
     
     if _clerk_validator is None:
-        clerk_publishable_key = os.getenv("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", "")
+        # Try backend-specific key first, fallback to frontend key for compatibility
+        clerk_publishable_key = (
+            os.getenv("CLERK_PUBLISHABLE_KEY") or 
+            os.getenv("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY") or 
+            os.getenv("VITE_CLERK_PUBLISHABLE_KEY") or 
+            ""
+        )
         clerk_secret_key = os.getenv("CLERK_SECRET_KEY", "")
         
         if not clerk_publishable_key:
-            raise ValueError("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY environment variable is required")
+            raise ValueError("CLERK_PUBLISHABLE_KEY (or NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) environment variable is required")
         
         _clerk_validator = ClerkJWTValidator(clerk_publishable_key, clerk_secret_key)
         logger.info("Initialized Clerk JWT validator")

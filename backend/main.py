@@ -122,8 +122,14 @@ async def initialize_services():
         audit_service = AuditService()
         
         # Initialize WebSocket authentication
+        clerk_publishable_key = (
+            os.getenv("CLERK_PUBLISHABLE_KEY") or 
+            os.getenv("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY") or 
+            os.getenv("VITE_CLERK_PUBLISHABLE_KEY") or 
+            ""
+        )
         websocket_auth = WebSocketAuthMiddleware(
-            clerk_publishable_key=os.getenv("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", ""),
+            clerk_publishable_key=clerk_publishable_key,
             clerk_secret_key=os.getenv("CLERK_SECRET_KEY", "")
         )
         
