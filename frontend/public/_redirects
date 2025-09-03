@@ -1,0 +1,13 @@
+# SPA fallback for client-side routing
+# This ensures all routes serve index.html for React Router to handle
+
+# API routes should NOT fallback to index.html
+/api/*  https://onevice-backend.onrender.com/api/:splat  200
+
+# Static assets (images, css, js, etc.) should return 404 if not found
+/assets/*  /assets/:splat  200
+/favicon.ico  /favicon.ico  200
+/manifest.json  /manifest.json  200
+
+# All other routes fallback to index.html for client-side routing
+/*  /index.html  200
