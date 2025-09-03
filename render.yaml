@@ -10,7 +10,7 @@ services:
       npm ci
       npm run build
     publishDir: ./frontend/dist
-    branch: main
+    branch: master
     buildFilter:
       paths:
         - frontend/**
@@ -39,7 +39,7 @@ services:
     runtime: python
     plan: standard  # 2GB RAM, 1 CPU for AI workloads
     region: oregon
-    branch: main
+    branch: master
     rootDir: ./backend
     buildCommand: |
       python -m pip install --upgrade pip
