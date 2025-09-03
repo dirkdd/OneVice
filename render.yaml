@@ -64,6 +64,8 @@ services:
         value: INFO
       - key: ALLOWED_ORIGINS
         value: "https://onevice-frontend.onrender.com,https://onevice.com"
+      - key: ALLOWED_HOSTS
+        value: "localhost,127.0.0.1,onevice-backend.onrender.com"
       
       # External Database Connections (Using your existing remote instances)
       - key: NEO4J_URI
