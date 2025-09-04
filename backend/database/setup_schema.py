@@ -30,6 +30,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from database.connection_manager import ConnectionManager, initialize_database
 from database.neo4j_client import ConnectionConfig
+from database.create_indexes import IndexManager
 
 
 def setup_logging(verbose: bool = False):
@@ -206,6 +207,36 @@ async def create_schema(
                 for error in creation_result["vector_indexes"]["errors"]:
                     logger.error(f"  - {error}")
         
+        # Create performance indexes for graph tools
+        logger.info("🚀 Creating performance indexes for graph tools...")
+        
+        try:
+            # Initialize index manager
+            index_manager = IndexManager(connection_manager.neo4j_client, logger)
+            
+            # Create performance indexes
+            performance_created, performance_failed = await index_manager.create_all_indexes(
+                drop_existing=False  # Don't drop existing since we just created core schema
+            )
+            
+            logger.info(f"✅ Performance indexes created: {performance_created} created, {performance_failed} failed")
+            
+            # Add performance index results to creation result
+            creation_result["performance_indexes"] = {
+                "created": performance_created,
+                "failed": performance_failed,
+                "success": performance_failed == 0
+            }
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to create performance indexes: {e}")
+            creation_result["performance_indexes"] = {
+                "created": 0,
+                "failed": 0,
+                "success": False,
+                "error": str(e)
+            }
+        
         # Final validation
         logger.info("🔍 Validating created schema...")
         final_validation = await connection_manager.schema.validate_schema()
@@ -223,6 +254,45 @@ async def create_schema(
     
     except Exception as e:
         logger.error(f"Schema creation failed: {e}")
+        return {"success": False, "error": str(e)}
+
+
+async def create_performance_indexes_only(
+    connection_manager: ConnectionManager,
+    logger: logging.Logger,
+    drop_existing: bool = False
+) -> Dict[str, Any]:
+    """Create only performance indexes for graph tools (skip schema creation)"""
+    
+    try:
+        logger.info("🚀 Creating performance indexes for graph tools...")
+        
+        # Initialize index manager
+        index_manager = IndexManager(connection_manager.neo4j_client, logger)
+        
+        # Create performance indexes
+        created_count, failed_count = await index_manager.create_all_indexes(drop_existing)
+        
+        success = failed_count == 0
+        
+        if success:
+            logger.info(f"✅ Performance index creation completed successfully")
+            logger.info(f"Created {created_count} indexes")
+        else:
+            logger.error(f"❌ Performance index creation completed with {failed_count} failures")
+            logger.info(f"Created {created_count} indexes successfully")
+        
+        return {
+            "success": success,
+            "performance_indexes": {
+                "created": created_count,
+                "failed": failed_count,
+                "success": success
+            }
+        }
+    
+    except Exception as e:
+        logger.error(f"Performance index creation failed: {e}")
         return {"success": False, "error": str(e)}
 
 
@@ -284,6 +354,8 @@ async def main():
                        help="Drop existing schema before creating new (DANGEROUS)")
     parser.add_argument("--validate-only", action="store_true",
                        help="Only validate existing schema")
+    parser.add_argument("--indexes-only", action="store_true",
+                       help="Only create performance indexes (skip schema creation)")
     parser.add_argument("--config-file", type=str,
                        help="Path to JSON configuration file")
     parser.add_argument("--force", action="store_true",
@@ -338,6 +410,10 @@ async def main():
         if args.validate_only:
             result = await validate_schema_only(connection_manager, logger)
             exit_code = 0 if result["success"] and result.get("valid", False) else 1
+        
+        elif args.indexes_only:
+            result = await create_performance_indexes_only(connection_manager, logger, args.drop_existing)
+            exit_code = 0 if result["success"] else 1
         
         else:
             result = await create_schema(connection_manager, logger, args.drop_existing)

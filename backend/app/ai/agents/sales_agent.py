@@ -14,11 +14,14 @@ from ..config import AIConfig, AgentType
 from ..llm.router import LLMRouter  
 from ..llm.prompt_templates import PromptType
 from ..services.knowledge_service import KnowledgeGraphService
+from ..tools.tool_mixins import CRMToolsMixin
 from ...core.exceptions import AIProcessingError
+from ...database.neo4j_client import Neo4jClient
+from ...tools.folk_ingestion.folk_client import FolkClient
 
 logger = logging.getLogger(__name__)
 
-class SalesIntelligenceAgent(BaseAgent):
+class SalesIntelligenceAgent(BaseAgent, CRMToolsMixin):
     """
     Sales intelligence agent specialized in:
     - Lead qualification and scoring
