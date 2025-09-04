@@ -16,8 +16,8 @@ from ..llm.prompt_templates import PromptType
 from ..services.knowledge_service import KnowledgeGraphService
 from ..tools.tool_mixins import CRMToolsMixin
 from ...core.exceptions import AIProcessingError
-from ...database.neo4j_client import Neo4jClient
-from ...tools.folk_ingestion.folk_client import FolkClient
+from database.neo4j_client import Neo4jClient
+from tools.folk_ingestion.folk_client import FolkClient
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,9 @@ class SalesIntelligenceAgent(BaseAgent, CRMToolsMixin):
         llm_router: LLMRouter,
         knowledge_service: Optional[KnowledgeGraphService] = None,
         redis_client=None,
-        model_config_manager=None
+        model_config_manager=None,
+        neo4j_client: Optional[Neo4jClient] = None,
+        folk_client: Optional[FolkClient] = None
     ):
         super().__init__(
             agent_type=AgentType.SALES,
@@ -48,7 +50,14 @@ class SalesIntelligenceAgent(BaseAgent, CRMToolsMixin):
         )
         
         self.knowledge_service = knowledge_service
+        self.neo4j_client = neo4j_client
+        self.folk_client = folk_client
         self.specialization = "sales_intelligence"
+        
+        # Initialize CRM-specific tools if client is available
+        if neo4j_client:
+            self.init_crm_tools(neo4j_client, folk_client, redis_client)
+            logger.info("Sales tools initialized for SalesIntelligenceAgent")
 
     def _get_prompt_type(self) -> PromptType:
         """Get prompt type for sales agent"""

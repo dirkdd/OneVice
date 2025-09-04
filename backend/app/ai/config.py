@@ -48,6 +48,19 @@ class AIConfig(BaseSettings):
     # Anthropic Configuration
     anthropic_api_key: Optional[str] = Field(default=None, env="ANTHROPIC_API_KEY")
     
+    # Folk CRM Configuration
+    folk_api_keys: Optional[str] = Field(default=None, env="FOLK_API_KEYS")
+    folk_api_url: str = Field(default="https://api.folk.app/v1", env="FOLK_API_BASE_URL")
+    folk_api_rate_limit: int = Field(default=100, env="FOLK_API_RATE_LIMIT")
+    folk_api_timeout: int = Field(default=30, env="FOLK_API_TIMEOUT")
+    
+    @property
+    def folk_api_key(self) -> Optional[str]:
+        """Get the first Folk API key from comma-separated list"""
+        if self.folk_api_keys:
+            return self.folk_api_keys.split(',')[0].strip()
+        return None
+    
     # Neo4j Configuration
     neo4j_uri: Optional[str] = Field(default=None, env="NEO4J_URI") 
     neo4j_username: Optional[str] = Field(default=None, env="NEO4J_USERNAME")

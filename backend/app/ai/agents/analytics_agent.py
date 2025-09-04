@@ -16,8 +16,8 @@ from ..llm.prompt_templates import PromptType
 from ..services.knowledge_service import KnowledgeGraphService
 from ..tools.tool_mixins import AnalyticsToolsMixin
 from ...core.exceptions import AIProcessingError
-from ...database.neo4j_client import Neo4jClient
-from ...tools.folk_ingestion.folk_client import FolkClient
+from database.neo4j_client import Neo4jClient
+from tools.folk_ingestion.folk_client import FolkClient
 
 logger = logging.getLogger(__name__)
 

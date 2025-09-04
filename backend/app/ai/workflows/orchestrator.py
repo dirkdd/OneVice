@@ -24,7 +24,7 @@ from ..agents.sales_agent import SalesIntelligenceAgent
 from ..agents.talent_agent import TalentAcquisitionAgent
 from ..agents.analytics_agent import LeadershipAnalyticsAgent
 from ..tools.graph_tools import GraphQueryTools
-from ...tools.folk_ingestion.folk_client import FolkClient
+from tools.folk_ingestion.folk_client import FolkClient
 from ...core.exceptions import AIProcessingError
 
 logger = logging.getLogger(__name__)
@@ -139,7 +139,8 @@ class AgentOrchestrator:
                 llm_router=self.llm_router,
                 knowledge_service=self.knowledge_service,
                 redis_client=self.redis_client,
-                graph_tools=self.graph_tools  # Add shared graph tools
+                neo4j_client=self.neo4j_client,
+                folk_client=self.folk_client
             )
             
             # Talent Acquisition Agent with talent-focused tools
@@ -148,7 +149,8 @@ class AgentOrchestrator:
                 llm_router=self.llm_router,
                 knowledge_service=self.knowledge_service,
                 redis_client=self.redis_client,
-                graph_tools=self.graph_tools  # Add shared graph tools
+                neo4j_client=self.neo4j_client,
+                folk_client=self.folk_client
             )
             
             # Leadership Analytics Agent with analytics-focused tools
@@ -157,7 +159,8 @@ class AgentOrchestrator:
                 llm_router=self.llm_router,
                 knowledge_service=self.knowledge_service,
                 redis_client=self.redis_client,
-                graph_tools=self.graph_tools  # Add shared graph tools
+                neo4j_client=self.neo4j_client,
+                folk_client=self.folk_client
             )
             
             logger.info(f"Initialized {len(self.agents)} AI agents with graph query tools")

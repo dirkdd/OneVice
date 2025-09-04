@@ -93,8 +93,8 @@ class ConnectionManager:
                 results["schema_valid"] = True  # Assume valid if not checking
             
             results["initialization_time"] = asyncio.get_event_loop().time() - start_time
-            results["success"] = neo4j_connected and results["schema_valid"]
-            self._initialized = results["success"]
+            results["success"] = neo4j_connected  # Only require connection, not schema validity
+            self._initialized = neo4j_connected    # Mark as initialized if connected
             
             if self._initialized:
                 logger.info(f"Database initialization completed successfully in {results['initialization_time']:.2f}s")
@@ -120,8 +120,8 @@ class ConnectionManager:
             Dict with schema creation/validation results
         """
         
-        if not self._initialized or not self.schema_manager:
-            raise RuntimeError("Connection manager not initialized. Call initialize() first.")
+        if not self.neo4j_client or not self.schema_manager:
+            raise RuntimeError("Database connection not available. Call initialize() first.")
         
         logger.info("Ensuring database schema is complete...")
         
