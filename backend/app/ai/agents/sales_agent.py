@@ -73,7 +73,12 @@ class SalesIntelligenceAgent(BaseAgent, CRMToolsMixin):
             
         elif any(word in query_lower for word in ["market", "trend", "analysis", "competitive"]):
             intent = "market_analysis"
-            task_params = {"query": query, "timeframe": "current"}
+            task_params = {
+                "query": query,
+                "timeframe": "current",
+                "segment": user_context.get("industry_segment", "entertainment"),
+                "location": user_context.get("location", "global")
+            }
             
         elif any(word in query_lower for word in ["budget", "cost", "pricing", "rate"]):
             intent = "budget_analysis"

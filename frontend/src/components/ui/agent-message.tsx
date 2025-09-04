@@ -31,7 +31,7 @@ const MessageContent: React.FC<MessageContentProps> = ({
   return (
     <div className={cn("space-y-3", className)}>
       <div className="prose prose-invert prose-sm max-w-none">
-        <div className="whitespace-pre-wrap break-words leading-relaxed text-gray-200">
+        <div className="whitespace-pre-line break-words leading-relaxed text-gray-200">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
@@ -78,14 +78,20 @@ const MessageContent: React.FC<MessageContentProps> = ({
             ),
             // Custom styling for lists
             ul: ({ children }) => (
-              <ul className="list-disc list-inside space-y-1 text-gray-200">
+              <ul className="list-disc list-inside space-y-0.5 text-gray-200 mb-3">
                 {children}
               </ul>
             ),
             ol: ({ children }) => (
-              <ol className="list-decimal list-inside space-y-1 text-gray-200">
+              <ol className="list-decimal list-inside space-y-0.5 text-gray-200 mb-3">
                 {children}
               </ol>
+            ),
+            // Custom styling for paragraphs
+            p: ({ children }) => (
+              <p className="mb-2 text-gray-200">
+                {children}
+              </p>
             ),
             // Custom styling for headers
             h1: ({ children }) => (
