@@ -29,7 +29,7 @@ class AIConfig(BaseSettings):
     
     # Model Configuration
     default_provider: LLMProvider = LLMProvider.TOGETHER
-    fallback_provider: LLMProvider = LLMProvider.OPENAI
+    fallback_provider: LLMProvider = LLMProvider.TOGETHER
     
     # Together.ai Configuration
     together_api_key: Optional[str] = Field(default=None, env="TOGETHER_API_KEY")
@@ -127,7 +127,7 @@ class AIConfig(BaseSettings):
             },
             AgentType.ANALYTICS: {
                 **base_config,
-                "preferred_model": self.openai_default_model,  # Use OpenAI for complex analytics
+                "preferred_model": self.together_default_model,  # Use Together.ai for analytics
                 "temperature": 0.3,  # Very focused
                 "system_prompt_key": "leadership_analytics",
             },

@@ -58,12 +58,12 @@ class LLMRouter:
             )
             logger.info("Initialized Together.ai provider")
         
-        # OpenAI client
-        if self.config.openai_api_key:
-            self.providers[LLMProvider.OPENAI] = AsyncOpenAI(
-                api_key=self.config.openai_api_key
-            )
-            logger.info("Initialized OpenAI provider")
+        # OpenAI client - disabled (no valid API key configured)
+        # if self.config.openai_api_key:
+        #     self.providers[LLMProvider.OPENAI] = AsyncOpenAI(
+        #         api_key=self.config.openai_api_key
+        #     )
+        #     logger.info("Initialized OpenAI provider")
 
     async def route_query(
         self,
@@ -172,13 +172,7 @@ class LLMRouter:
         if preferred and preferred in self.providers:
             return preferred
         
-        # Provider selection logic based on complexity and cost
-        if complexity == QueryComplexity.COMPLEX:
-            # Use OpenAI for complex reasoning (better quality)
-            if LLMProvider.OPENAI in self.providers:
-                return LLMProvider.OPENAI
-        
-        # Default to Together.ai for cost efficiency
+        # Use Together.ai for all complexities (only configured provider)
         if LLMProvider.TOGETHER in self.providers:
             return LLMProvider.TOGETHER
         
@@ -192,13 +186,9 @@ class LLMRouter:
     def _get_fallback_provider(self, failed_provider: LLMProvider) -> Optional[LLMProvider]:
         """Get fallback provider when primary fails"""
         
-        fallback_order = {
-            LLMProvider.TOGETHER: LLMProvider.OPENAI,
-            LLMProvider.OPENAI: LLMProvider.TOGETHER,
-        }
-        
-        fallback = fallback_order.get(failed_provider)
-        return fallback if fallback in self.providers else None
+        # Only Together.ai is configured, so no fallback available
+        # Could retry with same provider after a delay, but for now return None
+        return None
 
     async def _complete(
         self,
@@ -330,24 +320,12 @@ class LLMRouter:
         text: str,
         model: Optional[str] = None
     ) -> List[float]:
-        """Generate text embeddings using OpenAI"""
+        """Generate text embeddings - currently disabled (no OpenAI provider)"""
         
-        if LLMProvider.OPENAI not in self.providers:
-            raise AIProcessingError("OpenAI provider required for embeddings")
-        
-        client = self.providers[LLMProvider.OPENAI]
-        embedding_model = model or self.config.openai_embedding_model
-        
-        try:
-            response = await client.embeddings.create(
-                input=text,
-                model=embedding_model
-            )
-            return response.data[0].embedding
-            
-        except Exception as e:
-            logger.error(f"Embedding generation failed: {e}")
-            raise AIProcessingError(f"Embedding generation failed: {e}")
+        raise AIProcessingError(
+            "Embedding generation not available - OpenAI provider not configured. "
+            "Consider using Together.ai embedding models or external embedding service."
+        )
 
     def get_provider_stats(self) -> Dict[str, Dict[str, Any]]:
         """Get performance statistics for all providers"""
