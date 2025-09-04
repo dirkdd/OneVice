@@ -74,12 +74,8 @@ Demonstration prompts that showcase the power of specialized AI agents working t
 
 **Prompt**:
 ```
-"Our lead director on the Samsung campaign just dropped out 2 weeks before shoot. Emergency response needed:
-1. Find immediate replacement directors with tech commercial experience
-2. Assess impact on current crew assignments and other projects
-3. Analyze Samsung's preferred creative styles from past campaigns
-4. Review our contingency options and backup talent relationships
-5. Calculate budget and timeline implications for different scenarios"
+"
+"
 ```
 
 **Agent Collaboration Flow**:

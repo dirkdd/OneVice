@@ -12,9 +12,9 @@ import asyncio
 from typing import Dict, List, Any, Optional, Union
 from datetime import datetime, timedelta
 
-from ...database.neo4j_client import Neo4jClient
-from ...tools.folk_ingestion.folk_client import FolkClient
-from ...core.exceptions import AIProcessingError
+from database.neo4j_client import Neo4jClient
+from tools.folk_ingestion.folk_client import FolkClient
+from app.core.exceptions import AIProcessingError
 
 logger = logging.getLogger(__name__)
 
@@ -1414,7 +1414,7 @@ class GraphQueryTools:
         
         # Use full-text search with optional type filter
         if doc_type:
-            search_query = f"""
+            search_query = """
             CALL db.index.fulltext.queryNodes('document_fulltext_index', $search_query)
             YIELD node, score
             MATCH (node:Document)
@@ -1428,7 +1428,7 @@ class GraphQueryTools:
             LIMIT 15
             """
         else:
-            search_query = f"""
+            search_query = """
             CALL db.index.fulltext.queryNodes('document_fulltext_index', $search_query)
             YIELD node, score
             MATCH (node:Document)
