@@ -222,7 +222,7 @@ class LLMRouter:
             
             # Format response
             return {
-                "content": response.choices[0].message.content,
+                "content": self._clean_response_content(response.choices[0].message.content),
                 "provider": provider,
                 "model": params["model"],
                 "usage": {
@@ -309,6 +309,25 @@ class LLMRouter:
             stats["avg_response_time"] = (
                 (current_avg * (total_requests - 1) + response_time) / total_requests
             )
+
+    def _clean_response_content(self, content: str) -> str:
+        """Clean and format LLM response content for better display"""
+        import re
+        
+        # Convert numbered main sections to bold headers
+        # Pattern: "1. Section Name:" becomes "**Section Name:**"
+        content = re.sub(r'^(\d+)\.\s+([^:\n]+:)', r'**\2**', content, flags=re.MULTILINE)
+        
+        # Reduce excessive newlines (max 2)
+        content = re.sub(r'\n{3,}', '\n\n', content)
+        
+        # Ensure consistent bullet formatting
+        content = re.sub(r'^[\*\-]\s+', '• ', content, flags=re.MULTILINE)
+        
+        # Clean up extra spaces
+        content = re.sub(r'[ ]+\n', '\n', content)
+        
+        return content.strip()
 
     def _estimate_cost(self, provider: LLMProvider, total_tokens: int) -> float:
         """Estimate cost for request"""
