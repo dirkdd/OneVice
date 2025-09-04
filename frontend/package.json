@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run verify-assets",
-    "build:strict": "tsc && vite build && npm run verify-assets",
+    "build": "vite build && cp public/_redirects dist/_redirects && npm run verify-assets",
+    "build:strict": "tsc && vite build && cp public/_redirects dist/_redirects && npm run verify-assets",
     "build:no-verify": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
