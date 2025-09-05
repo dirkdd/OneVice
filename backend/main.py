@@ -813,7 +813,7 @@ async def apply_security_filtering(query: str, user_context: Dict[str, Any]) -> 
             "Salesperson": 4
         }
         
-        user_level = role_hierarchy.get(user_role, 4)  # Default to lowest level
+        user_level = role_hierarchy.get(user_role.title(), 4)  # Default to lowest level, case-insensitive
         
         # Filter sensitive content keywords
         sensitive_keywords = [
@@ -881,13 +881,14 @@ async def generate_ai_response_with_metadata(content: str, user_dict: Dict[str, 
     user_name = user_dict.get("name", "there")
     
     try:
-        # Prepare user context with RBAC data
+        # Prepare user context with RBAC data from Clerk metadata
         user_context = {
             "user_id": user_dict.get("id", "unknown"),
             "name": user_name,
-            "role": user_dict.get("role", "Salesperson"),
-            "data_sensitivity": user_dict.get("data_sensitivity", 6),  # Default to least sensitive
+            "role": user_dict.get("role", "Salesperson"),  # This will now come from Clerk metadata
+            "data_sensitivity": user_dict.get("data_access_level", 1),  # Use access level from metadata
             "permissions": user_dict.get("permissions", []),
+            "department": user_dict.get("department", "general"),  # Department from metadata
             "session_context": {
                 "conversation_id": conversation_id,
                 "timestamp": datetime.now().isoformat()

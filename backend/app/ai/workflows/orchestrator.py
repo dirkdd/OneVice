@@ -77,6 +77,8 @@ class AgentOrchestrator:
         # Routing configuration
         self.routing_rules = self._setup_routing_rules()
 
+
+
     @classmethod
     async def create_orchestrator(cls, config: AIConfig) -> 'AgentOrchestrator':
         """

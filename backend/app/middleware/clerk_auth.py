@@ -77,15 +77,30 @@ class ClerkAuthMiddleware(BaseHTTPMiddleware):
                 if not email or email == '':
                     email = f"{user_data.get('id', 'unknown')}@clerk.user"
                 
+                # Map role string from Clerk to UserRole enum
+                role_str = user_data.get('role', 'SALESPERSON').upper()
+                try:
+                    user_role = UserRole[role_str]
+                    logger.info(f"Mapped role '{role_str}' to UserRole.{user_role.name}")
+                except KeyError:
+                    logger.warning(f"Unknown role '{role_str}' from Clerk, defaulting to SALESPERSON")
+                    user_role = UserRole.SALESPERSON
+                
                 user = AuthUser(
                     id=user_data.get('id', ''),
                     email=email,  # Use processed email
                     name=user_data.get('name', 'Unknown User'),
-                    role=UserRole.SALESPERSON,  # Default role, can be enhanced later
-                    permissions=get_role_permissions(UserRole.SALESPERSON),
+                    role=user_role,  # Use mapped role from Clerk metadata
+                    permissions=get_role_permissions(user_role),
                     provider=AuthProvider.CLERK,  # Required field
                     provider_id=user_data.get('id', '')  # Required field - use same as id
                 )
+                
+                # Store additional metadata in request state for use by API endpoints
+                request.state.user_metadata = {
+                    'data_access_level': user_data.get('data_access_level', 1),
+                    'department': user_data.get('department', 'general')
+                }
                 
                 request.state.current_user = user
                 logger.debug(f"Successfully authenticated user {user.id} for {request.url.path}")

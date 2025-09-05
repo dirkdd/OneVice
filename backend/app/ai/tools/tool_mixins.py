@@ -39,25 +39,40 @@ class CRMToolsMixin(BaseToolsMixin):
     
     def init_crm_tools(self, neo4j_client, folk_client=None, redis_client=None):
         """Initialize CRM-specific tools"""
-        self.graph_tools = self._init_graph_tools(neo4j_client, folk_client, redis_client)
+        if not neo4j_client:
+            logger.error("Neo4j client is None in init_crm_tools")
+            self.graph_tools = None
+            return
         
-        # Log available CRM tools
-        logger.info(f"CRM tools initialized for {self.__class__.__name__}")
+        try:
+            self.graph_tools = self._init_graph_tools(neo4j_client, folk_client, redis_client)
+            logger.info(f"CRM tools initialized successfully for {self.__class__.__name__}")
+        except Exception as e:
+            logger.error(f"Failed to initialize CRM tools for {self.__class__.__name__}: {e}")
+            self.graph_tools = None
     
     # CRM-specific tool methods
     async def get_lead_profile(self, name: str) -> Dict[str, Any]:
         """Get comprehensive lead profile (wrapper for get_person_details)"""
-        result = await self.graph_tools.get_person_details(name)
+        if not self.graph_tools:
+            logger.error("Graph tools not initialized in get_lead_profile")
+            return {"found": False, "error": "Graph tools not available"}
         
-        # Add CRM-specific context
-        if result.get("found"):
-            result["lead_context"] = {
-                "is_warm_lead": len(result.get("projects", [])) > 0,
-                "has_internal_contact": result.get("contact_owner") is not None,
-                "organization_size": "large" if result.get("organization") else "individual"
-            }
-        
-        return result
+        try:
+            result = await self.graph_tools.get_person_details(name)
+            
+            # Add CRM-specific context
+            if result.get("found"):
+                result["lead_context"] = {
+                    "is_warm_lead": len(result.get("projects", [])) > 0,
+                    "has_internal_contact": result.get("contact_owner") is not None,
+                    "organization_size": "large" if result.get("organization") else "individual"
+                }
+            
+            return result
+        except Exception as e:
+            logger.error(f"Error in get_lead_profile for '{name}': {e}")
+            return {"found": False, "error": str(e)}
     
     async def find_decision_makers(self, organization_name: str) -> List[Dict[str, Any]]:
         """Find decision makers at target organization"""

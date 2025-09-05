@@ -49,7 +49,9 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(curl:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "mcp__serena__insert_after_symbol",
+      "mcp__serena__replace_symbol_body"
     ],
     "deny": [],
     "ask": []

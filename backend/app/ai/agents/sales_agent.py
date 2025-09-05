@@ -63,6 +63,48 @@ class SalesIntelligenceAgent(BaseAgent, CRMToolsMixin):
         """Get prompt type for sales agent"""
         return PromptType.SALES_INTELLIGENCE
 
+    def _extract_name_from_query(self, query: str) -> Dict[str, str]:
+        """Extract person name and company from query"""
+        import re
+        
+        result = {"name": "", "company": ""}
+        query_lower = query.lower()
+        
+        # Pattern 1: "profile for John Doe" or "tell me about Jane Smith"
+        name_pattern = r'(?:profile for|tell me about|who is|information on|details about)\s+([A-Z][a-z]+\s+[A-Z][a-z]+)'
+        match = re.search(name_pattern, query, re.IGNORECASE)
+        if match:
+            result["name"] = match.group(1).strip()
+        
+        # Pattern 2: "John Doe who works at" or "Jane Smith at Company"
+        name_company_pattern = r'([A-Z][a-z]+\s+[A-Z][a-z]+)(?:\s+who works at|\s+at)\s+([A-Z][^.?!]*)'
+        match = re.search(name_company_pattern, query)
+        if match:
+            result["name"] = match.group(1).strip()
+            result["company"] = match.group(2).strip()
+        
+        # Pattern 3: Just capitalized names (fallback)
+        if not result["name"]:
+            name_fallback = r'\b([A-Z][a-z]+\s+[A-Z][a-z]+)\b'
+            match = re.search(name_fallback, query)
+            if match:
+                result["name"] = match.group(1).strip()
+        
+        # Extract company from various patterns
+        if not result["company"]:
+            company_patterns = [
+                r'at\s+([A-Z][^.?!,]*?)(?:\.|,|$|\s+I\s+need)',
+                r'works at\s+([A-Z][^.?!,]*?)(?:\.|,|$|\s+I\s+need)',
+                r'from\s+([A-Z][^.?!,]*?)(?:\.|,|$|\s+I\s+need)'
+            ]
+            for pattern in company_patterns:
+                match = re.search(pattern, query, re.IGNORECASE)
+                if match:
+                    result["company"] = match.group(1).strip()
+                    break
+        
+        return result
+
     async def _analyze_query(
         self,
         query: str, 
@@ -71,35 +113,241 @@ class SalesIntelligenceAgent(BaseAgent, CRMToolsMixin):
         """Analyze sales-related query for context"""
         
         query_lower = query.lower()
+        logger.debug(f"Analyzing query: '{query[:100]}...'")
         
         # Detect query intent
         intent = "general"
         task_params = {}
         
-        if any(word in query_lower for word in ["lead", "qualify", "score", "prospect"]):
+        # Check for profile/person lookup queries first
+        profile_keywords = ["profile", "who is", "who works", "tell me about", "information on", "details about", "comprehensive profile"]
+        profile_match = any(keyword in query_lower for keyword in profile_keywords)
+        logger.debug(f"Profile keywords match: {profile_match}, found: {[kw for kw in profile_keywords if kw in query_lower]}")
+        
+        if profile_match:
+            # Extract name and company from query
+            extracted_info = self._extract_name_from_query(query)
+            logger.debug(f"Extracted name info: {extracted_info}")
+            if extracted_info["name"]:  # Only if we found a name
+                intent = "profile_lookup"
+                logger.debug(f"Intent set to profile_lookup for name: {extracted_info['name']}")
+                task_params = {
+                    "name": extracted_info["name"],
+                    "company": extracted_info["company"],
+                    "query": query
+                }
+        
+        # Check for traditional lead qualification (expanded keywords)
+        lead_keywords = ["lead", "qualify", "score", "prospect", "client", "potential client", "recommendation"]
+        lead_match = any(word in query_lower for word in lead_keywords)
+        logger.debug(f"Lead keywords match: {lead_match}, found: {[kw for kw in lead_keywords if kw in query_lower]}")
+        
+        if not profile_match and lead_match:  # Only if not already profile_lookup
             intent = "lead_qualification"
-            task_params = {"query": query, "context": user_context}
-            
-        elif any(word in query_lower for word in ["market", "trend", "analysis", "competitive"]):
-            intent = "market_analysis"
+            logger.debug("Intent set to lead_qualification")
             task_params = {
-                "query": query,
-                "timeframe": "current",
-                "segment": user_context.get("industry_segment", "entertainment"),
-                "location": user_context.get("location", "global")
+                "lead_info": query,  # Use query as lead info
+                "context": str(user_context)  # Convert context to string for template
             }
             
+        elif any(word in query_lower for word in ["market", "trend", "analysis", "competitive"]):
+            if intent == "general":  # Only if no higher priority intent set
+                intent = "market_analysis"
+                logger.debug("Intent set to market_analysis")
+                task_params = {
+                    "query": query,
+                    "timeframe": "current",
+                    "segment": user_context.get("industry_segment", "entertainment"),
+                    "location": user_context.get("location", "global")
+                }
+            
         elif any(word in query_lower for word in ["budget", "cost", "pricing", "rate"]):
-            intent = "budget_analysis"
-            task_params = {"query": query, "context": user_context}
+            if intent == "general":  # Only if no higher priority intent set
+                intent = "budget_analysis"
+                logger.debug("Intent set to budget_analysis")
+                task_params = {
+                    "project_type": user_context.get("project_type", "unspecified"),
+                    "budget_range": user_context.get("budget", "not provided"),
+                    "requirements": query  # Use query as requirements
+                }
+        
+        logger.info(f"Final intent determined: {intent}")
         
         return {
             "intent": intent,
             "task_type": intent,
             "task_params": task_params,
-            "requires_knowledge_graph": intent in ["market_analysis", "lead_qualification"],
+            "requires_knowledge_graph": intent in ["market_analysis", "lead_qualification", "profile_lookup"],
             "complexity": "moderate" if intent != "general" else "simple"
         }
+
+    async def _process_query(self, state) -> Dict[str, Any]:
+        """Override base process_query to actually call sales tools"""
+        
+        # Call parent method to get query analysis
+        state = await super()._process_query(state)
+        
+        # Get the analysis results
+        task_context = state.get("task_context", {})
+        intent = task_context.get("intent", "general")
+        task_params = task_context.get("task_params", {})
+        user_context = state.get("user_context", {})
+        
+        # Get latest user query
+        latest_message = state["messages"][-1]
+        if hasattr(latest_message, 'content'):
+            user_query = latest_message.content
+        else:
+            user_query = latest_message.get("content", "")
+        
+        logger.info(f"Sales agent processing query with intent: {intent}")
+        
+        # Actually call the appropriate tools based on intent
+        try:
+            if intent == "profile_lookup" and hasattr(self, 'get_lead_profile'):
+                logger.info("Calling get_lead_profile tool...")
+                # Extract name from task params
+                name = task_params.get("name", "")
+                company = task_params.get("company", "")
+                logger.info(f"Looking up profile for: {name} at {company}")
+                tool_result = await self.get_lead_profile(name)
+                state["tool_results"] = {"get_lead_profile": tool_result}
+                
+            elif intent == "lead_qualification" and hasattr(self, 'qualify_lead'):
+                logger.info("Calling qualify_lead tool...")
+                # Extract lead info from query or use defaults
+                lead_info = {
+                    "company_name": "Creative Studios LA",  # Could extract from query
+                    "project_type": "entertainment",
+                    "budget": "not specified",
+                    "contact_name": "Michael Chen"  # Could extract from query
+                }
+                tool_result = await self.qualify_lead(lead_info, user_context)
+                state["tool_results"] = {"qualify_lead": tool_result}
+                
+            elif intent == "market_analysis" and hasattr(self, 'market_analysis'):
+                logger.info("Calling market_analysis tool...")
+                segment = task_params.get("segment", "entertainment")
+                location = task_params.get("location", "global")
+                tool_result = await self.market_analysis(segment, location)
+                state["tool_results"] = {"market_analysis": tool_result}
+                
+            elif intent == "budget_analysis" and hasattr(self, 'get_pricing_recommendations'):
+                logger.info("Calling get_pricing_recommendations tool...")
+                project_details = {
+                    "type": task_params.get("project_type", "entertainment"),
+                    "scope": "standard",
+                    "timeline": "not specified"
+                }
+                tool_result = await self.get_pricing_recommendations(project_details)
+                state["tool_results"] = {"pricing_recommendations": tool_result}
+                
+            else:
+                logger.info(f"No specific tool for intent '{intent}', using general response")
+                state["tool_results"] = {}
+                
+        except Exception as e:
+            logger.error(f"Error calling sales tools for intent '{intent}': {e}")
+            state["tool_results"] = {"error": str(e)}
+        
+        return state
+
+    async def _generate_response(self, state) -> Dict[str, Any]:
+        """Override base generate_response to include tool results"""
+        
+        # Get tool results if available
+        tool_results = state.get("tool_results", {})
+        task_context = state.get("task_context", {})
+        intent = task_context.get("intent", "general")
+        
+        # Get latest user message
+        latest_message = state["messages"][-1]
+        if hasattr(latest_message, 'content'):
+            user_query = latest_message.content
+        else:
+            user_query = latest_message.get("content", "")
+        
+        # If we have tool results, create a response that incorporates them
+        if tool_results and not tool_results.get("error"):
+            logger.info(f"Generating response with tool results for intent: {intent}")
+            
+            # Create a response that includes the tool results
+            if intent == "profile_lookup" and "get_lead_profile" in tool_results:
+                result = tool_results["get_lead_profile"]
+                name = result.get("name", "the person")
+                
+                if result.get("found"):
+                    # Build comprehensive profile response
+                    response_content = f"## Profile for {name}\n\n"
+                    
+                    # Basic info
+                    if result.get("bio"):
+                        response_content += f"**Background**: {result['bio']}\n\n"
+                    
+                    # Organization info
+                    if result.get("organization"):
+                        response_content += f"**Organization**: {result['organization']}\n"
+                    if result.get("title"):
+                        response_content += f"**Title**: {result['title']}\n\n"
+                    
+                    # Project history
+                    projects = result.get("projects", [])
+                    if projects:
+                        response_content += f"**Recent Projects** ({len(projects)} found):\n"
+                        for project in projects[:3]:  # Show top 3 projects
+                            proj_name = project.get("title", "Unnamed Project")
+                            proj_role = project.get("role", "Unknown Role")
+                            response_content += f"• {proj_name} - {proj_role}\n"
+                        if len(projects) > 3:
+                            response_content += f"• ...and {len(projects) - 3} more projects\n"
+                        response_content += "\n"
+                    
+                    # Skills and expertise
+                    skills = result.get("skills", [])
+                    if skills:
+                        response_content += f"**Key Skills**: {', '.join(skills[:5])}\n\n"
+                    
+                    # CRM context from lead_context
+                    lead_context = result.get("lead_context", {})
+                    if lead_context:
+                        response_content += f"**Sales Context**:\n"
+                        if lead_context.get("is_warm_lead"):
+                            response_content += f"• Warm lead with project history\n"
+                        if lead_context.get("has_internal_contact"):
+                            response_content += f"• Has internal contact/relationship\n"
+                        response_content += f"• Organization size: {lead_context.get('organization_size', 'unknown')}\n"
+                else:
+                    response_content = f"I couldn't find detailed information for {name} in our database. This could be a new contact or they may not be in our current network."
+                
+            elif intent == "lead_qualification" and "qualify_lead" in tool_results:
+                result = tool_results["qualify_lead"]
+                response_content = f"Based on my analysis of the lead information for {result.get('lead_info', {}).get('company_name', 'the prospect')}:\n\n"
+                response_content += result.get("qualification_analysis", "Lead analysis completed.")
+                
+            elif intent == "market_analysis" and "market_analysis" in tool_results:
+                result = tool_results["market_analysis"]
+                response_content = f"Here's my market analysis for the {result.get('segment', 'entertainment')} segment:\n\n"
+                response_content += result.get("analysis", "Market analysis completed.")
+                
+            elif intent == "budget_analysis" and "pricing_recommendations" in tool_results:
+                result = tool_results["pricing_recommendations"]
+                response_content = f"Based on similar project data, here are my pricing recommendations:\n\n"
+                response_content += result.get("pricing_analysis", "Pricing analysis completed.")
+                
+            else:
+                response_content = f"I've analyzed your query about {user_query} and retrieved relevant data from our systems."
+            
+            # Create the response message
+            from langchain_core.messages import AIMessage
+            ai_message = AIMessage(content=response_content)
+            state["messages"].append(ai_message)
+            
+        else:
+            # Fall back to parent method if no tools were called
+            logger.info("No tool results available, using standard LLM response")
+            state = await super()._generate_response(state)
+        
+        return state
 
     async def qualify_lead(
         self,

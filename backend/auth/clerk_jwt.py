@@ -10,6 +10,7 @@ import requests
 import json
 import os
 import logging
+import aiohttp
 from typing import Dict, Optional, Any
 from datetime import datetime, timezone
 from functools import lru_cache
@@ -119,7 +120,7 @@ class ClerkJWTValidator:
                 return None
             
             # Extract user information from token payload
-            user_data = self._extract_user_data(payload)
+            user_data = await self._extract_user_data(payload)
             if user_data:
                 logger.info(f"Successfully validated token for user: {user_data.get('id')}")
             
@@ -135,7 +136,7 @@ class ClerkJWTValidator:
             logger.error(f"Unexpected error validating token: {e}")
             return None
     
-    def _extract_user_data(self, payload: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def _extract_user_data(self, payload: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """Extract and normalize user data from JWT payload"""
         try:
             # Clerk JWT payload structure
@@ -159,12 +160,14 @@ class ClerkJWTValidator:
             if not name:
                 name = email.split('@')[0] if email else f"User {user_id[:8]}"
             
-            # Map to OneVice user format
+            # Map to OneVice user format with default values
             user_data = {
                 "id": user_id,
                 "name": name,
                 "email": email or "",
-                "role": "SALESPERSON",  # Default role - could be customized based on metadata
+                "role": "SALESPERSON",  # Default role, will be overridden by metadata
+                "department": "general",  # Default department
+                "data_access_level": 1,  # Default access level (most restrictive)
                 "clerk_user_id": user_id,
                 "validated_at": datetime.now(timezone.utc).isoformat(),
                 "auth_method": "clerk_jwt"
@@ -176,16 +179,149 @@ class ClerkJWTValidator:
             if last_name:
                 user_data["last_name"] = last_name
             
-            # Check for custom role in public metadata
-            public_metadata = payload.get('public_metadata', {})
-            if isinstance(public_metadata, dict) and 'role' in public_metadata:
-                user_data["role"] = public_metadata['role'].upper()
+            # DEBUG: Log the complete payload structure to understand Clerk's format
+            logger.info(f"Complete JWT payload keys: {list(payload.keys())}")
+            logger.debug(f"Complete JWT payload: {json.dumps(payload, indent=2, default=str)}")
             
-            logger.debug(f"Extracted user data: {json.dumps(user_data, indent=2)}")
+            # Check for metadata in multiple possible locations and formats
+            metadata_sources = []
+            
+            # Standard snake_case format
+            if 'private_metadata' in payload:
+                metadata_sources.append(('private_metadata', payload['private_metadata'], 'snake_case'))
+            if 'public_metadata' in payload:
+                metadata_sources.append(('public_metadata', payload['public_metadata'], 'snake_case'))
+                
+            # CamelCase format (common in Clerk)
+            if 'privateMetadata' in payload:
+                metadata_sources.append(('privateMetadata', payload['privateMetadata'], 'camelCase'))
+            if 'publicMetadata' in payload:
+                metadata_sources.append(('publicMetadata', payload['publicMetadata'], 'camelCase'))
+                
+            # Unsafe metadata format (sometimes used by Clerk)
+            if 'unsafe_metadata' in payload:
+                metadata_sources.append(('unsafe_metadata', payload['unsafe_metadata'], 'unsafe'))
+            if 'unsafeMetadata' in payload:
+                metadata_sources.append(('unsafeMetadata', payload['unsafeMetadata'], 'unsafe'))
+                
+            logger.info(f"Found {len(metadata_sources)} metadata sources: {[src[0] for src in metadata_sources]}")
+            
+            # Extract role from metadata (prioritize private > public > unsafe)
+            role_found = False
+            for source_name, metadata, format_type in metadata_sources:
+                if isinstance(metadata, dict) and 'role' in metadata:
+                    user_data["role"] = metadata['role'].upper()
+                    logger.info(f"Role extracted from {source_name} ({format_type}): {user_data['role']}")
+                    role_found = True
+                    break
+            
+            if not role_found:
+                logger.warning("No role found in any metadata sources, using default SALESPERSON")
+            
+            # Extract department from metadata
+            dept_found = False
+            for source_name, metadata, format_type in metadata_sources:
+                if isinstance(metadata, dict) and 'department' in metadata:
+                    user_data["department"] = metadata['department']
+                    logger.info(f"Department extracted from {source_name}: {user_data['department']}")
+                    dept_found = True
+                    break
+                    
+            if not dept_found:
+                logger.warning("No department found in metadata, using default 'general'")
+            
+            # Extract data access level from metadata
+            access_level_found = False
+            for source_name, metadata, format_type in metadata_sources:
+                if isinstance(metadata, dict) and 'data_access_level' in metadata:
+                    user_data["data_access_level"] = int(metadata['data_access_level'])
+                    logger.info(f"Data access level from {source_name}: {user_data['data_access_level']}")
+                    access_level_found = True
+                    break
+                    
+            if not access_level_found:
+                logger.warning("No data_access_level found in metadata, using default 1")
+            
+            # If no metadata found in JWT, try fetching from Clerk API
+            if not role_found and not dept_found and not access_level_found:
+                logger.info("No metadata in JWT, attempting to fetch from Clerk API")
+                try:
+                    api_metadata = await self._fetch_user_metadata_from_api(user_id)
+                    if api_metadata:
+                        if 'role' in api_metadata:
+                            user_data["role"] = api_metadata['role'].upper()
+                            logger.info(f"Role fetched from Clerk API: {user_data['role']}")
+                        if 'department' in api_metadata:
+                            user_data["department"] = api_metadata['department']
+                            logger.info(f"Department fetched from Clerk API: {user_data['department']}")
+                        if 'data_access_level' in api_metadata:
+                            user_data["data_access_level"] = int(api_metadata['data_access_level'])
+                            logger.info(f"Data access level fetched from Clerk API: {user_data['data_access_level']}")
+                except Exception as e:
+                    logger.warning(f"Failed to fetch metadata from Clerk API: {e}")
+            
+            logger.debug(f"Final extracted user data: {json.dumps(user_data, indent=2)}")
             return user_data
             
         except Exception as e:
             logger.error(f"Error extracting user data from token: {e}")
+            return None
+
+    async def _fetch_user_metadata_from_api(self, user_id: str) -> Optional[Dict[str, Any]]:
+        """Fetch user metadata from Clerk API using user ID"""
+        
+        if not self.clerk_secret_key:
+            logger.warning("No Clerk secret key available for API calls")
+            return None
+        
+        try:
+            # Clerk API endpoint for user data
+            api_url = f"https://api.clerk.dev/v1/users/{user_id}"
+            
+            headers = {
+                "Authorization": f"Bearer {self.clerk_secret_key}",
+                "Content-Type": "application/json"
+            }
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.get(api_url, headers=headers) as response:
+                    if response.status == 200:
+                        user_data = await response.json()
+                        
+                        # Extract metadata from API response
+                        metadata = {}
+                        
+                        # Check private_metadata first
+                        private_metadata = user_data.get('private_metadata', {})
+                        if isinstance(private_metadata, dict):
+                            metadata.update(private_metadata)
+                            logger.info(f"Found private_metadata in API response: {list(private_metadata.keys())}")
+                        
+                        # Then check public_metadata
+                        public_metadata = user_data.get('public_metadata', {})
+                        if isinstance(public_metadata, dict):
+                            # Don't override private_metadata values
+                            for key, value in public_metadata.items():
+                                if key not in metadata:
+                                    metadata[key] = value
+                            logger.info(f"Found public_metadata in API response: {list(public_metadata.keys())}")
+                        
+                        # Also check unsafe_metadata
+                        unsafe_metadata = user_data.get('unsafe_metadata', {})
+                        if isinstance(unsafe_metadata, dict):
+                            for key, value in unsafe_metadata.items():
+                                if key not in metadata:
+                                    metadata[key] = value
+                            logger.info(f"Found unsafe_metadata in API response: {list(unsafe_metadata.keys())}")
+                        
+                        return metadata if metadata else None
+                        
+                    else:
+                        logger.warning(f"Clerk API returned status {response.status}")
+                        return None
+                        
+        except Exception as e:
+            logger.error(f"Error fetching user metadata from Clerk API: {e}")
             return None
 
 # Global validator instance
