@@ -532,7 +532,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 })
             
     except WebSocketDisconnect:
-        user_name = user['name'] if user and isinstance(user, dict) else 'unknown'
+        user_name = f"User {user['id'][:8]}..." if user and isinstance(user, dict) and user.get('id') else 'anonymous'
         logger.info(f"WebSocket client disconnected: {user_name}")
     except Exception as e:
         logger.error(f"WebSocket error: {e}")

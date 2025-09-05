@@ -51,7 +51,7 @@ async def create_tables():
         async with engine.begin() as conn:
             # Import all models to register them with Base
             from app.models.user import User
-            from app.models.auth import Role, Permission, UserRole
+            from auth.models import UserRole, PermissionSet, PermissionAction
             from app.models.audit import AuditLog, AuditSummary
             
             # Create all tables
@@ -85,7 +85,7 @@ async def test_connection():
 
 async def init_database():
     """Initialize database with default data"""
-    from app.models.auth import Role, Permission
+    from auth.models import PermissionSet, PermissionAction
     from app.services.auth_service import create_default_roles_and_permissions
     
     try:

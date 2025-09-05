@@ -8,7 +8,7 @@ from typing import Optional, List, Dict, Any, Set
 from datetime import timedelta
 from app.core.redis import get_redis, cache_manager
 from app.models.user import User
-from app.models.auth import Role, Permission, UserRole
+from auth.models import UserRole, PermissionSet, PermissionAction
 import json
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession

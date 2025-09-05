@@ -14,7 +14,7 @@ import uuid
 from app.main import app
 from app.services.auth_service import auth_service
 from app.models.user import User
-from app.models.auth import Role, UserRole
+from auth.models import UserRole, PermissionSet
 from app.core.exceptions import UserNotFoundError, RoleNotFoundError
 
 

@@ -178,6 +178,94 @@ response = await llm_router.chat_completion(
 )
 ```
 
+## Authentication System
+
+### Architecture Overview
+OneVice uses a consolidated authentication system with Clerk as the primary identity provider:
+
+- **Primary Location**: `backend/auth/` directory (single source of truth)
+- **JWT Validation**: `backend/auth/clerk_jwt.py` - Main JWT validation with Clerk API integration
+- **Models**: `backend/auth/models.py` - All authentication models (AuthUser, UserRole, etc.)
+- **Middleware**: `backend/app/middleware/clerk_auth.py` - FastAPI middleware for request authentication
+
+### Key Components
+
+#### JWT Token Validation (`backend/auth/clerk_jwt.py`)
+- **ClerkJWTValidator**: Main validation class with metadata caching
+- **Signature Verification**: Bypassed for demo (configurable for production)
+- **Metadata Caching**: 5-minute TTL to reduce Clerk API calls
+- **Logging**: Reduced verbosity (DEBUG level for routine operations)
+
+#### Authentication Models (`backend/auth/models.py`)
+- **AuthUser**: Primary user model with role-based permissions
+- **UserRole**: Enum for user roles (SALESPERSON, ANALYST, LEADERSHIP, etc.)
+- **DataSensitivity**: 6-tier data access control system
+- **PermissionSet**: Role-based permission management
+
+#### Middleware Integration
+```python
+# Authentication flow in FastAPI middleware
+from auth.clerk_jwt import validate_clerk_token
+from auth.models import AuthUser, UserRole, AuthProvider
+
+# Token validation with automatic role mapping
+user_data = await validate_clerk_token(token)
+user = AuthUser(
+    id=user_data.get('id'),
+    role=UserRole[user_data.get('role', 'SALESPERSON')],
+    permissions=get_role_permissions(user_role)
+)
+```
+
+### Role-Based Access Control (RBAC)
+
+#### User Roles and Data Access Levels
+1. **SALESPERSON** (Level 1-2): Basic industry data, leads
+2. **ANALYST** (Level 1-3): Analytics, reports, project data
+3. **MANAGER** (Level 1-4): Team data, departmental insights
+4. **LEADERSHIP** (Level 1-6): Full access including financial and strategic data
+
+#### Metadata Integration
+- **Clerk Private Metadata**: Role, department, data_access_level
+- **API Fallback**: Automatic Clerk API call if JWT lacks metadata
+- **Caching Strategy**: 5-minute cache to optimize performance
+
+### WebSocket Authentication
+```python
+# WebSocket endpoint with authentication
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    # Accept connection first, then authenticate via message
+    await websocket.accept()
+    
+    # Handle auth message
+    if message_type == "auth":
+        user_data = await validate_clerk_token(token)
+        # Store authenticated user for session
+```
+
+### Environment Configuration
+```bash
+# Required for authentication
+CLERK_SECRET_KEY=[clerk-secret-key]
+CLERK_PUBLISHABLE_KEY=[clerk-publishable-key]
+
+# Optional Okta SSO integration
+OKTA_CLIENT_ID=[okta-client-id]
+OKTA_CLIENT_SECRET=[okta-client-secret]
+```
+
+### Import Structure (Consolidated)
+All authentication imports now use single source:
+```python
+# ✅ CORRECT - Use auth.models for all authentication imports
+from auth.models import AuthUser, UserRole, DataSensitivity
+from auth.clerk_jwt import validate_clerk_token
+
+# ❌ REMOVED - Duplicate app.models.auth files deleted
+# from app.models.auth import ...  # No longer exists
+```
+
 ## Development Workflow
 
 ### Phase-Based Implementation
@@ -185,7 +273,7 @@ response = await llm_router.chat_completion(
 2. **Phase 2**: Environment configuration and database connections ✅
 3. **Phase 3**: Core schema implementation ✅
 4. **Phase 4**: LLM integration and routing ✅
-5. **Phase 5**: Authentication and authorization (In Progress)
+5. **Phase 5**: Authentication and authorization ✅
 6. **Phase 6**: Agent orchestration and workflows
 7. **Phase 7**: Frontend components and UX
 8. **Phase 8**: Production deployment and monitoring

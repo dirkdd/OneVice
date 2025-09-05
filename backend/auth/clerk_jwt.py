@@ -25,6 +25,34 @@ class ClerkJWTValidator:
         self.clerk_secret_key = clerk_secret_key
         self._public_keys_cache = {}
         self._cache_expiry = None
+        # Add metadata caching to reduce API calls
+        self._metadata_cache = {}
+        self._metadata_cache_ttl = 300  # 5 minutes TTL
+
+    def _is_metadata_cached(self, user_id: str) -> bool:
+        """Check if metadata is cached and not expired"""
+        if user_id not in self._metadata_cache:
+            return False
+        
+        cached_data = self._metadata_cache[user_id]
+        cache_time = cached_data.get('cache_time', 0)
+        current_time = datetime.now(timezone.utc).timestamp()
+        
+        return (current_time - cache_time) < self._metadata_cache_ttl
+    
+    def _get_cached_metadata(self, user_id: str) -> Optional[Dict[str, Any]]:
+        """Get cached metadata if available and not expired"""
+        if self._is_metadata_cached(user_id):
+            return self._metadata_cache[user_id]['data']
+        return None
+    
+    def _cache_metadata(self, user_id: str, metadata: Dict[str, Any]) -> None:
+        """Cache metadata with timestamp"""
+        self._metadata_cache[user_id] = {
+            'data': metadata,
+            'cache_time': datetime.now(timezone.utc).timestamp()
+        }
+        logger.debug(f"Cached metadata for user {user_id[:8]}...")
         
     @lru_cache(maxsize=1)
     def _get_clerk_jwks_url(self) -> str:
@@ -114,7 +142,7 @@ class ClerkJWTValidator:
                 # For production deployment, decode without verification 
                 # This allows the demo to work while maintaining the auth flow structure
                 payload = jwt.decode(token, key="", options={"verify_signature": False})
-                logger.info("Token decoded (signature verification bypassed for demo)")
+                logger.debug("Token decoded (signature verification bypassed for demo)")
             except jwt.JWTError as e:
                 logger.error(f"Invalid token format: {e}")
                 return None
@@ -180,7 +208,7 @@ class ClerkJWTValidator:
                 user_data["last_name"] = last_name
             
             # DEBUG: Log the complete payload structure to understand Clerk's format
-            logger.info(f"Complete JWT payload keys: {list(payload.keys())}")
+            logger.debug(f"Complete JWT payload keys: {list(payload.keys())}")
             logger.debug(f"Complete JWT payload: {json.dumps(payload, indent=2, default=str)}")
             
             # Check for metadata in multiple possible locations and formats
@@ -204,7 +232,7 @@ class ClerkJWTValidator:
             if 'unsafeMetadata' in payload:
                 metadata_sources.append(('unsafeMetadata', payload['unsafeMetadata'], 'unsafe'))
                 
-            logger.info(f"Found {len(metadata_sources)} metadata sources: {[src[0] for src in metadata_sources]}")
+            logger.debug(f"Found {len(metadata_sources)} metadata sources: {[src[0] for src in metadata_sources]}")
             
             # Extract role from metadata (prioritize private > public > unsafe)
             role_found = False
@@ -244,7 +272,7 @@ class ClerkJWTValidator:
             
             # If no metadata found in JWT, try fetching from Clerk API
             if not role_found and not dept_found and not access_level_found:
-                logger.info("No metadata in JWT, attempting to fetch from Clerk API")
+                logger.debug("No metadata in JWT, attempting to fetch from Clerk API")
                 try:
                     api_metadata = await self._fetch_user_metadata_from_api(user_id)
                     if api_metadata:
@@ -268,7 +296,13 @@ class ClerkJWTValidator:
             return None
 
     async def _fetch_user_metadata_from_api(self, user_id: str) -> Optional[Dict[str, Any]]:
-        """Fetch user metadata from Clerk API using user ID"""
+        """Fetch user metadata from Clerk API using user ID with caching"""
+        
+        # Check cache first
+        cached_metadata = self._get_cached_metadata(user_id)
+        if cached_metadata is not None:
+            logger.debug(f"Using cached metadata for user {user_id[:8]}...")
+            return cached_metadata
         
         if not self.clerk_secret_key:
             logger.warning("No Clerk secret key available for API calls")
@@ -295,7 +329,7 @@ class ClerkJWTValidator:
                         private_metadata = user_data.get('private_metadata', {})
                         if isinstance(private_metadata, dict):
                             metadata.update(private_metadata)
-                            logger.info(f"Found private_metadata in API response: {list(private_metadata.keys())}")
+                            logger.debug(f"Found private_metadata in API response: {list(private_metadata.keys())}")
                         
                         # Then check public_metadata
                         public_metadata = user_data.get('public_metadata', {})
@@ -304,7 +338,7 @@ class ClerkJWTValidator:
                             for key, value in public_metadata.items():
                                 if key not in metadata:
                                     metadata[key] = value
-                            logger.info(f"Found public_metadata in API response: {list(public_metadata.keys())}")
+                            logger.debug(f"Found public_metadata in API response: {list(public_metadata.keys())}")
                         
                         # Also check unsafe_metadata
                         unsafe_metadata = user_data.get('unsafe_metadata', {})
@@ -312,7 +346,11 @@ class ClerkJWTValidator:
                             for key, value in unsafe_metadata.items():
                                 if key not in metadata:
                                     metadata[key] = value
-                            logger.info(f"Found unsafe_metadata in API response: {list(unsafe_metadata.keys())}")
+                            logger.debug(f"Found unsafe_metadata in API response: {list(unsafe_metadata.keys())}")
+                        
+                        # Cache the metadata for future use
+                        if metadata:
+                            self._cache_metadata(user_id, metadata)
                         
                         return metadata if metadata else None
                         
