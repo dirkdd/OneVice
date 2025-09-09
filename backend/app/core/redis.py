@@ -24,8 +24,57 @@ def is_wsl() -> bool:
     except Exception:
         return False
 
+def is_production_environment() -> bool:
+    """Detect if running in production environment (containers, cloud platforms)"""
+    import os
+    try:
+        # Check common production environment indicators
+        env_indicators = [
+            os.getenv("ENVIRONMENT") == "production",
+            os.getenv("NODE_ENV") == "production", 
+            os.getenv("RENDER") is not None,  # Render platform
+            os.getenv("HEROKU_APP_NAME") is not None,  # Heroku
+            os.getenv("RAILWAY_ENVIRONMENT") is not None,  # Railway
+            os.getenv("VERCEL_ENV") == "production",  # Vercel
+            os.path.exists("/.dockerenv"),  # Docker container
+            os.path.exists("/app"),  # Common container app directory
+            "render.com" in platform.node().lower() if platform.node() else False,
+        ]
+        return any(env_indicators)
+    except Exception:
+        return False
+
 # Redis client instance
 redis_client: Optional[redis.Redis] = None
+
+def get_effective_redis_url() -> Optional[str]:
+    """Get Redis URL either from direct config or constructed from components"""
+    import os
+    
+    # First try the direct REDIS_URL from settings
+    if hasattr(settings, 'REDIS_URL') and settings.REDIS_URL:
+        return settings.REDIS_URL
+    
+    # Try from environment variables directly
+    redis_url = os.getenv("REDIS_URL")
+    if redis_url:
+        return redis_url
+    
+    # Construct Redis URL from individual components
+    redis_host = os.getenv("REDIS_HOST")
+    redis_port = os.getenv("REDIS_PORT")
+    redis_password = os.getenv("REDIS_PASSWORD")
+    redis_username = os.getenv("REDIS_USERNAME", "default")
+    
+    if redis_host:
+        port = int(redis_port) if redis_port else 6379
+        
+        if redis_password:
+            return f"redis://{redis_username}:{redis_password}@{redis_host}:{port}"
+        else:
+            return f"redis://{redis_host}:{port}"
+    
+    return None
 
 def redis_retry(max_attempts=3, delay=1):
     """Decorator to retry Redis operations on connection failures"""
@@ -60,23 +109,36 @@ async def init_redis() -> None:
             "health_check_interval": 30
         }
         
-        # Add socket keepalive options only if not running in WSL
-        if not is_wsl():
-            connection_params.update({
-                "socket_keepalive": True,
-                "socket_keepalive_options": {
-                    1: 1,  # TCP_KEEPIDLE
-                    2: 3,  # TCP_KEEPINTVL
-                    3: 5,  # TCP_KEEPCNT
-                }
-            })
-            logger.info("🐧 Linux environment: Using enhanced socket options")
-        else:
-            # WSL environment - disable socket keepalive options
+        # Add socket keepalive options with production environment compatibility
+        try:
+            # Only enable socket keepalive for local development environments
+            # Production environments (containers, cloud) may have restrictions
+            if not is_wsl() and not is_production_environment():
+                connection_params.update({
+                    "socket_keepalive": True,
+                    "socket_keepalive_options": {
+                        1: 1,  # TCP_KEEPIDLE
+                        2: 3,  # TCP_KEEPINTVL
+                        3: 5,  # TCP_KEEPCNT
+                    }
+                })
+                logger.info("🐧 Local Linux environment: Using enhanced socket options")
+            else:
+                # Production, WSL, or containerized environment - use basic keepalive
+                connection_params["socket_keepalive"] = True  # Basic keepalive only
+                environment_type = "production/container" if is_production_environment() else "WSL"
+                logger.info(f"☁️ {environment_type} environment: Using basic socket keepalive for compatibility")
+        except Exception as e:
+            # Fallback to no socket keepalive if there are any issues
             connection_params["socket_keepalive"] = False
-            logger.info("🪟 WSL environment: Disabled socket keepalive options for compatibility")
+            logger.warning(f"⚠️ Socket keepalive disabled due to configuration error: {e}")
         
-        redis_client = redis.from_url(settings.REDIS_URL, **connection_params)
+        # Get Redis URL (either from direct config or constructed from components)
+        redis_url = get_effective_redis_url()
+        if not redis_url:
+            raise ConnectionError("Redis URL not available - check REDIS_URL or REDIS_HOST/REDIS_PORT/REDIS_PASSWORD configuration")
+        
+        redis_client = redis.from_url(redis_url, **connection_params)
         
         # Test connection
         await redis_client.ping()

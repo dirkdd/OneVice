@@ -79,6 +79,10 @@ class AIConfig(BaseSettings):
     
     # Redis Configuration (for agent state)
     redis_url: Optional[str] = Field(default=None, env="REDIS_URL")
+    redis_host: Optional[str] = Field(default=None, env="REDIS_HOST")
+    redis_port: Optional[int] = Field(default=None, env="REDIS_PORT")
+    redis_password: Optional[str] = Field(default=None, env="REDIS_PASSWORD")
+    redis_username: Optional[str] = Field(default=None, env="REDIS_USERNAME")
     redis_key_prefix: str = "onevice:ai:"
     
     # System Configuration
@@ -154,11 +158,29 @@ class AIConfig(BaseSettings):
         
         return agent_configs.get(agent_type, base_config)
     
+    def get_effective_redis_url(self) -> Optional[str]:
+        """Get Redis URL either from direct config or constructed from components"""
+        if self.redis_url:
+            return self.redis_url
+        
+        # Construct Redis URL from individual components
+        if self.redis_host:
+            username = self.redis_username or "default"
+            password = self.redis_password or ""
+            port = self.redis_port or 6379
+            
+            if password:
+                return f"redis://{username}:{password}@{self.redis_host}:{port}"
+            else:
+                return f"redis://{self.redis_host}:{port}"
+        
+        return None
+    
     def is_agent_orchestrator_available(self) -> bool:
         """Check if all required services are available for agent orchestrator"""
         required_fields = [
             self.together_api_key or self.openai_api_key,  # At least one LLM provider
-            self.redis_url,  # Required for agent memory
+            self.get_effective_redis_url(),  # Required for agent memory (URL or components)
         ]
         return all(required_fields)
     
@@ -169,8 +191,8 @@ class AIConfig(BaseSettings):
         if not (self.together_api_key or self.openai_api_key):
             missing.append("LLM API key (TOGETHER_API_KEY or OPENAI_API_KEY)")
         
-        if not self.redis_url:
-            missing.append("REDIS_URL")
+        if not self.get_effective_redis_url():
+            missing.append("Redis configuration (REDIS_URL or REDIS_HOST + REDIS_PORT + REDIS_PASSWORD)")
             
         # Neo4j is optional for basic operation
         if not (self.neo4j_uri and self.neo4j_username and self.neo4j_password):
