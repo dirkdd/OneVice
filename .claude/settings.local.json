@@ -51,7 +51,8 @@
       "Bash(curl:*)",
       "Bash(curl:*)",
       "mcp__serena__insert_after_symbol",
-      "mcp__serena__replace_symbol_body"
+      "mcp__serena__replace_symbol_body",
+      "mcp__serena__think_about_collected_information"
     ],
     "deny": [],
     "ask": []

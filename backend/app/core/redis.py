@@ -9,12 +9,20 @@ from app.core.config import settings
 import json
 import logging
 import asyncio
+import platform
 from typing import Optional, Any, Dict
 from datetime import timedelta
 from functools import wraps
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+def is_wsl() -> bool:
+    """Detect if running in Windows Subsystem for Linux"""
+    try:
+        return "microsoft" in platform.uname().release.lower() or "wsl" in platform.uname().release.lower()
+    except Exception:
+        return False
 
 # Redis client instance
 redis_client: Optional[redis.Redis] = None
@@ -40,27 +48,39 @@ async def init_redis() -> None:
     """Initialize Redis connection with enhanced pooling"""
     global redis_client
     try:
-        redis_client = redis.from_url(
-            settings.REDIS_URL,
-            encoding="utf-8",
-            decode_responses=True,
-            max_connections=50,  # Increased from 20
-            socket_keepalive=True,
-            socket_keepalive_options={
-                1: 1,  # TCP_KEEPIDLE
-                2: 3,  # TCP_KEEPINTVL
-                3: 5,  # TCP_KEEPCNT
-            },
-            socket_connect_timeout=5,
-            socket_timeout=5,
-            retry_on_timeout=True,
-            retry_on_error=[ConnectionError, TimeoutError],
-            health_check_interval=30
-        )
+        # Base connection parameters
+        connection_params = {
+            "encoding": "utf-8",
+            "decode_responses": True,
+            "max_connections": 50,
+            "socket_connect_timeout": 5,
+            "socket_timeout": 5,
+            "retry_on_timeout": True,
+            "retry_on_error": [ConnectionError, TimeoutError],
+            "health_check_interval": 30
+        }
+        
+        # Add socket keepalive options only if not running in WSL
+        if not is_wsl():
+            connection_params.update({
+                "socket_keepalive": True,
+                "socket_keepalive_options": {
+                    1: 1,  # TCP_KEEPIDLE
+                    2: 3,  # TCP_KEEPINTVL
+                    3: 5,  # TCP_KEEPCNT
+                }
+            })
+            logger.info("🐧 Linux environment: Using enhanced socket options")
+        else:
+            # WSL environment - disable socket keepalive options
+            connection_params["socket_keepalive"] = False
+            logger.info("🪟 WSL environment: Disabled socket keepalive options for compatibility")
+        
+        redis_client = redis.from_url(settings.REDIS_URL, **connection_params)
         
         # Test connection
         await redis_client.ping()
-        logger.info("✅ Redis connection established with enhanced pooling")
+        logger.info("✅ Redis connection established")
         
     except Exception as e:
         logger.error(f"❌ Redis connection failed: {e}")

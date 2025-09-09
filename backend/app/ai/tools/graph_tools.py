@@ -45,6 +45,12 @@ class GraphQueryTools:
         self.folk_client = folk_client
         self.redis_client = redis_client
         
+        # Log Neo4j client initialization
+        if neo4j_client:
+            logger.info(f"GraphQueryTools initialized with Neo4j client type: {type(neo4j_client)}")
+        else:
+            logger.warning("GraphQueryTools initialized with no Neo4j client")
+        
         # Cache TTL settings (in seconds)
         self.cache_ttl = {
             "person": 300,      # 5 minutes for person data
@@ -920,28 +926,48 @@ class GraphQueryTools:
         
         query = """
         MATCH (o:Organization)
-        WHERE o.name CONTAINS $org_name
+        WHERE o.id CONTAINS $org_name OR o.name CONTAINS $org_name OR 
+              toLower(o.id) CONTAINS toLower($org_name) OR toLower(o.name) CONTAINS toLower($org_name)
         OPTIONAL MATCH (o)<-[:WORKS_FOR]-(p:Person)
         OPTIONAL MATCH (o)<-[:FOR_CLIENT]-(proj:Project)
         OPTIONAL MATCH (o)<-[:FOR_ORGANIZATION]-(d:Deal)
         RETURN o {
-            .name, .type, .description, .folkId, .tier, .industry
+            .id, .name, .type, .description, .folkId
         } AS organization,
         collect(DISTINCT p.name) AS people,
-        collect(DISTINCT proj.title) AS projects,
+        collect(DISTINCT proj.name) AS projects,
         collect(DISTINCT d.name) AS deals,
         count(DISTINCT p) AS people_count,
         count(DISTINCT proj) AS project_count
         """
         
         try:
+            # Ensure Neo4j client is properly connected
+            if not self.neo4j_client:
+                raise Exception("Neo4j client not initialized")
+            
+            # Check connection state if available
+            if hasattr(self.neo4j_client, 'state'):
+                from database.neo4j_client import ConnectionState
+                if self.neo4j_client.state != ConnectionState.CONNECTED:
+                    logger.info("Neo4j client not connected, attempting connection...")
+                    await self.neo4j_client.connect()
+            
+            logger.debug(f"Executing organization query for: {org_name}")
             result = await self.neo4j_client.execute_query(query, {"org_name": org_name})
             
             if result and result.records:
                 record = result.records[0]
+                org_data = record.get("organization", {})
+                
+                # Create a clean organization name - use name if available, otherwise use id
+                display_name = org_data.get("name") or org_data.get("id") or "Unknown Organization"
                 
                 response = {
-                    "organization": record.get("organization", {}),
+                    "organization": {
+                        **org_data,
+                        "display_name": display_name  # Add a consistent display name
+                    },
                     "people": [p for p in record.get("people", []) if p],
                     "projects": [p for p in record.get("projects", []) if p],
                     "deals": [d for d in record.get("deals", []) if d],

@@ -34,7 +34,7 @@ class AIConfig(BaseSettings):
     # Together.ai Configuration
     together_api_key: Optional[str] = Field(default=None, env="TOGETHER_API_KEY")
     together_base_url: str = "https://api.together.xyz/v1"
-    together_default_model: str = "mistralai/Mixtral-8x7B-Instruct-v0.1"
+    together_default_model: str = "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
     together_max_tokens: int = 2048
     together_temperature: float = 0.7
     

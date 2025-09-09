@@ -16,7 +16,7 @@ from redis.asyncio import Redis
 
 from ..config import AIConfig, AgentType
 from ..llm.router import LLMRouter
-from ..graph.connection import Neo4jClient
+from database.neo4j_client import Neo4jClient
 from ..services.vector_service import VectorSearchService
 from ..services.knowledge_service import KnowledgeGraphService
 from ..agents.base_agent import BaseAgent
@@ -46,7 +46,7 @@ class AgentOrchestrator:
         
         # Initialize core services
         self.llm_router = LLMRouter(config)
-        self.neo4j_client = Neo4jClient(config)
+        self.neo4j_client = Neo4jClient()  # Uses environment variables for config
         self.redis_client = redis.from_url(config.redis_url)
         
         # Initialize Folk API client for live CRM data
@@ -135,14 +135,12 @@ class AgentOrchestrator:
         """Initialize all AI agents with graph query tools"""
         
         try:
-            # Sales Intelligence Agent with CRM-focused tools
+            # Sales Intelligence Agent with LangGraph tool binding
             self.agents[AgentType.SALES] = SalesIntelligenceAgent(
                 config=self.config,
                 llm_router=self.llm_router,
                 knowledge_service=self.knowledge_service,
-                redis_client=self.redis_client,
-                neo4j_client=self.neo4j_client,
-                folk_client=self.folk_client
+                redis_client=self.redis_client
             )
             
             # Talent Acquisition Agent with talent-focused tools
@@ -213,6 +211,11 @@ class AgentOrchestrator:
             
             # Initialize vector indexes if needed
             # This would typically be done during deployment
+            
+            # Setup agents that require async initialization
+            if AgentType.SALES in self.agents:
+                await self.agents[AgentType.SALES].setup()
+                logger.info("Sales Intelligence Agent setup completed")
             
             logger.info("All services initialized successfully")
             

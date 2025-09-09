@@ -12,6 +12,7 @@ from enum import Enum
 import httpx
 import openai
 from openai import AsyncOpenAI
+from langchain_openai import ChatOpenAI
 
 from ..config import AIConfig, LLMProvider
 from ...core.exceptions import AIProcessingError
@@ -359,3 +360,51 @@ class LLMRouter:
             }
             for provider, stats in self.provider_stats.items()
         }
+
+    def get_langchain_model(
+        self,
+        provider: Optional[LLMProvider] = None,
+        model: Optional[str] = None,
+        temperature: float = 0.7,
+        **kwargs
+    ) -> ChatOpenAI:
+        """
+        Get a LangChain-compatible chat model for tool binding.
+        
+        Args:
+            provider: LLM provider (defaults to Together.ai)
+            model: Model name (uses provider default if not specified)
+            temperature: Model temperature
+            **kwargs: Additional model parameters
+            
+        Returns:
+            ChatOpenAI instance configured for the specified provider
+        """
+        # Default to Together.ai provider
+        if provider is None:
+            provider = LLMProvider.TOGETHER
+        
+        # Validate provider availability
+        if provider not in self.providers:
+            raise AIProcessingError(f"Provider {provider.value} not available")
+        
+        # Get model configuration
+        model_config = self.config.get_model_config(provider)
+        if model is None:
+            model = model_config["model"]
+        
+        if provider == LLMProvider.TOGETHER:
+            # Configure ChatOpenAI for Together.ai's OpenAI-compatible API
+            return ChatOpenAI(
+                api_key=self.config.together_api_key,
+                base_url=self.config.together_base_url,
+                model=model,
+                temperature=temperature,
+                max_tokens=model_config["max_tokens"],
+                **kwargs
+            )
+        else:
+            # Future: Add support for other providers if needed
+            raise AIProcessingError(f"LangChain integration not implemented for {provider.value}")
+
+        logger.info(f"Created LangChain model for {provider.value}: {model}")

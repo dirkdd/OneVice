@@ -44,6 +44,9 @@ class CRMToolsMixin(BaseToolsMixin):
             self.graph_tools = None
             return
         
+        # Log client details for debugging
+        logger.info(f"Initializing CRM tools with Neo4j client type: {type(neo4j_client)}")
+        
         try:
             self.graph_tools = self._init_graph_tools(neo4j_client, folk_client, redis_client)
             logger.info(f"CRM tools initialized successfully for {self.__class__.__name__}")
@@ -102,6 +105,20 @@ class CRMToolsMixin(BaseToolsMixin):
     async def get_live_deal_status(self, deal_name: str) -> Dict[str, Any]:
         """Get real-time deal status with Folk API"""
         return await self.graph_tools.get_deal_details_with_live_status(deal_name)
+    
+    async def get_organization_profile(self, organization_name: str) -> Dict[str, Any]:
+        """Get comprehensive organization profile (wrapper for GraphQueryTools)"""
+        if not self.graph_tools:
+            logger.error("Graph tools not initialized in get_organization_profile")
+            return {"found": False, "error": "Graph tools not available"}
+        
+        try:
+            result = await self.graph_tools.get_organization_profile(organization_name)
+            logger.info(f"Organization profile lookup for '{organization_name}' - found: {result.get('found', False)}")
+            return result
+        except Exception as e:
+            logger.error(f"Error in get_organization_profile for '{organization_name}': {e}")
+            return {"found": False, "error": str(e)}
 
 
 class TalentToolsMixin(BaseToolsMixin):
