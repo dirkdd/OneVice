@@ -16,13 +16,15 @@ from redis.asyncio import Redis
 
 from ..config import AIConfig, AgentType
 from ..llm.router import LLMRouter
-from ..graph.connection import Neo4jClient
+from database.neo4j_client import Neo4jClient
 from ..services.vector_service import VectorSearchService
 from ..services.knowledge_service import KnowledgeGraphService
 from ..agents.base_agent import BaseAgent
 from ..agents.sales_agent import SalesIntelligenceAgent
 from ..agents.talent_agent import TalentAcquisitionAgent
 from ..agents.analytics_agent import LeadershipAnalyticsAgent
+from ..tools.graph_tools import GraphQueryTools
+from tools.folk_ingestion.folk_client import FolkClient
 from ...core.exceptions import AIProcessingError
 
 logger = logging.getLogger(__name__)
@@ -44,8 +46,21 @@ class AgentOrchestrator:
         
         # Initialize core services
         self.llm_router = LLMRouter(config)
-        self.neo4j_client = Neo4jClient(config)
+        self.neo4j_client = Neo4jClient()  # Uses environment variables for config
         self.redis_client = redis.from_url(config.redis_url)
+        
+        # Initialize Folk API client for live CRM data
+        self.folk_client = FolkClient(
+            api_key=config.folk_api_key,
+            base_url=config.folk_api_url
+        ) if hasattr(config, 'folk_api_key') and config.folk_api_key else None
+        
+        # Initialize graph query tools (shared across agents)
+        self.graph_tools = GraphQueryTools(
+            neo4j_client=self.neo4j_client,
+            folk_client=self.folk_client,
+            redis_client=self.redis_client
+        )
         
         # Initialize services
         self.vector_service = VectorSearchService(
@@ -55,18 +70,72 @@ class AgentOrchestrator:
             config, self.neo4j_client, self.vector_service
         )
         
-        # Initialize agents
+        # Initialize agents with graph tools
         self.agents: Dict[AgentType, BaseAgent] = {}
         self._initialize_agents()
         
         # Routing configuration
         self.routing_rules = self._setup_routing_rules()
 
-    def _initialize_agents(self):
-        """Initialize all AI agents"""
+
+
+    @classmethod
+    async def create_orchestrator(cls, config: AIConfig) -> 'AgentOrchestrator':
+        """
+        Factory method to create and initialize orchestrator with all dependencies
+        
+        Args:
+            config: AI configuration with database and service settings
+            
+        Returns:
+            Fully initialized AgentOrchestrator instance
+        """
+        try:
+            # Create orchestrator instance
+            orchestrator = cls(config)
+            
+            # Initialize all services
+            await orchestrator.initialize_services()
+            
+            # Validate graph tools initialization
+            if orchestrator.graph_tools:
+                await orchestrator._validate_graph_tools()
+            
+            logger.info("Agent orchestrator created successfully with all dependencies")
+            return orchestrator
+            
+        except Exception as e:
+            logger.error(f"Orchestrator creation failed: {e}")
+            raise AIProcessingError(f"Failed to create orchestrator: {e}")
+
+    async def _validate_graph_tools(self):
+        """Validate graph tools initialization and connectivity"""
         
         try:
-            # Sales Intelligence Agent
+            # Test Neo4j connection
+            test_query = "RETURN 1 as test"
+            await self.neo4j_client.execute_query(test_query)
+            logger.info("Graph tools Neo4j connection validated")
+            
+            # Test Redis connection if available
+            if self.redis_client:
+                await self.redis_client.ping()
+                logger.info("Graph tools Redis connection validated")
+            
+            # Test Folk API connection if available
+            if self.folk_client:
+                # This would be a simple health check
+                logger.info("Graph tools Folk API client initialized")
+            
+        except Exception as e:
+            logger.warning(f"Graph tools validation warning: {e}")
+            # Don't fail initialization, just warn
+
+    def _initialize_agents(self):
+        """Initialize all AI agents with graph query tools"""
+        
+        try:
+            # Sales Intelligence Agent with LangGraph tool binding
             self.agents[AgentType.SALES] = SalesIntelligenceAgent(
                 config=self.config,
                 llm_router=self.llm_router,
@@ -74,23 +143,34 @@ class AgentOrchestrator:
                 redis_client=self.redis_client
             )
             
-            # Talent Acquisition Agent
+            # Talent Acquisition Agent with talent-focused tools
             self.agents[AgentType.TALENT] = TalentAcquisitionAgent(
                 config=self.config,
                 llm_router=self.llm_router,
                 knowledge_service=self.knowledge_service,
-                redis_client=self.redis_client
+                redis_client=self.redis_client,
+                neo4j_client=self.neo4j_client,
+                folk_client=self.folk_client
             )
             
-            # Leadership Analytics Agent
+            # Leadership Analytics Agent with analytics-focused tools
             self.agents[AgentType.ANALYTICS] = LeadershipAnalyticsAgent(
                 config=self.config,
                 llm_router=self.llm_router,
                 knowledge_service=self.knowledge_service,
-                redis_client=self.redis_client
+                redis_client=self.redis_client,
+                neo4j_client=self.neo4j_client,
+                folk_client=self.folk_client
             )
             
-            logger.info(f"Initialized {len(self.agents)} AI agents")
+            logger.info(f"Initialized {len(self.agents)} AI agents with graph query tools")
+            
+            # Log graph tools capabilities
+            if self.graph_tools:
+                logger.info("Graph tools capabilities:")
+                logger.info("- Folk API integration: %s", "enabled" if self.folk_client else "disabled")
+                logger.info("- Redis caching: %s", "enabled" if self.redis_client else "disabled") 
+                logger.info("- Neo4j graph queries: enabled")
             
         except Exception as e:
             logger.error(f"Agent initialization failed: {e}")
@@ -131,6 +211,11 @@ class AgentOrchestrator:
             
             # Initialize vector indexes if needed
             # This would typically be done during deployment
+            
+            # Setup agents that require async initialization
+            if AgentType.SALES in self.agents:
+                await self.agents[AgentType.SALES].setup()
+                logger.info("Sales Intelligence Agent setup completed")
             
             logger.info("All services initialized successfully")
             
@@ -393,6 +478,7 @@ class AgentOrchestrator:
             "orchestrator_status": "healthy",
             "agents": {},
             "services": {},
+            "graph_tools": {},
             "timestamp": datetime.utcnow().isoformat()
         }
         
@@ -430,10 +516,88 @@ class AgentOrchestrator:
                 "error": str(e)
             }
         
+        # Check graph tools status
+        try:
+            status["graph_tools"] = await self._get_graph_tools_status()
+        except Exception as e:
+            status["graph_tools"] = {
+                "status": "error",
+                "error": str(e)
+            }
+        
         return status
 
+    async def _get_graph_tools_status(self) -> Dict[str, Any]:
+        """Get comprehensive graph tools status"""
+        
+        tools_status = {
+            "status": "healthy",
+            "neo4j_connection": "unknown",
+            "redis_connection": "unknown", 
+            "folk_api_connection": "unknown",
+            "cache_stats": {},
+            "available_tools": []
+        }
+        
+        try:
+            # Test Neo4j connection
+            await self.neo4j_client.execute_query("RETURN 1")
+            tools_status["neo4j_connection"] = "healthy"
+        except Exception as e:
+            tools_status["neo4j_connection"] = f"error: {str(e)}"
+            tools_status["status"] = "degraded"
+        
+        # Test Redis connection
+        if self.redis_client:
+            try:
+                await self.redis_client.ping()
+                tools_status["redis_connection"] = "healthy"
+                
+                # Get cache stats if possible
+                try:
+                    info = await self.redis_client.info()
+                    tools_status["cache_stats"] = {
+                        "used_memory": info.get("used_memory_human", "unknown"),
+                        "connected_clients": info.get("connected_clients", 0),
+                        "keyspace_hits": info.get("keyspace_hits", 0),
+                        "keyspace_misses": info.get("keyspace_misses", 0)
+                    }
+                except:
+                    pass
+                    
+            except Exception as e:
+                tools_status["redis_connection"] = f"error: {str(e)}"
+        else:
+            tools_status["redis_connection"] = "disabled"
+        
+        # Test Folk API connection
+        if self.folk_client:
+            tools_status["folk_api_connection"] = "enabled"
+            # Add Folk API health check if available
+        else:
+            tools_status["folk_api_connection"] = "disabled"
+        
+        # List available graph tools
+        if self.graph_tools:
+            tools_status["available_tools"] = [
+                "get_person_details",
+                "find_collaborators", 
+                "get_organization_profile",
+                "search_projects_by_criteria",
+                "find_similar_projects",
+                "get_project_team_details",
+                "get_creative_concepts_for_project",
+                "find_creative_references",
+                "search_documents_by_content",
+                "get_document_by_id",
+                "extract_project_insights", 
+                "get_network_connections"
+            ]
+        
+        return tools_status
+
     async def cleanup(self):
-        """Cleanup all resources"""
+        """Cleanup all resources including graph tools"""
         
         logger.info("Cleaning up AI orchestrator...")
         
@@ -443,6 +607,21 @@ class AgentOrchestrator:
                 await agent.cleanup()
             except Exception as e:
                 logger.error(f"Agent cleanup failed: {e}")
+        
+        # Cleanup graph tools connections
+        if self.graph_tools:
+            logger.info("Cleaning up graph tools connections...")
+            # Graph tools share the same connections, so we clean them up here
+            
+        # Cleanup Folk client if available
+        if self.folk_client:
+            try:
+                # Folk client cleanup if it has async cleanup method
+                if hasattr(self.folk_client, 'cleanup'):
+                    await self.folk_client.cleanup()
+                logger.info("Folk API client cleaned up")
+            except Exception as e:
+                logger.error(f"Folk client cleanup failed: {e}")
         
         # Cleanup services
         try:

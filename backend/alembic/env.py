@@ -26,7 +26,7 @@ from app.core.database import Base
 
 # Import all models so they register with Base.metadata
 from app.models.user import User
-from app.models.auth import Role, Permission, UserRole, role_permissions
+from auth.models import UserRole, PermissionSet, PermissionAction
 from app.models.audit import AuditLog, AuditSummary
 
 # Set target metadata for autogenerate support

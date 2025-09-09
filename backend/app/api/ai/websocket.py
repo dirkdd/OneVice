@@ -16,6 +16,7 @@ from fastapi.websockets import WebSocketState
 from ...ai.workflows.orchestrator import AgentOrchestrator
 from ...ai.config import AgentType, ai_config
 from ...core.exceptions import AIProcessingError
+from auth.clerk_jwt import validate_clerk_token
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +29,7 @@ class ConnectionManager:
     def __init__(self):
         self.active_connections: Dict[str, WebSocket] = {}
         self.user_connections: Dict[str, str] = {}  # user_id -> connection_id
+        self.authenticated_users: Dict[str, Dict[str, Any]] = {}  # connection_id -> user_data
         
     async def connect(self, websocket: WebSocket, connection_id: str, user_id: str):
         """Accept and store WebSocket connection"""
@@ -42,7 +44,18 @@ class ConnectionManager:
             del self.active_connections[connection_id]
         if user_id in self.user_connections:
             del self.user_connections[user_id]
+        if connection_id in self.authenticated_users:
+            del self.authenticated_users[connection_id]
         logger.info(f"WebSocket disconnected: {connection_id}")
+
+    def set_authenticated_user(self, connection_id: str, user_data: Dict[str, Any]):
+        """Store authenticated user data for connection"""
+        self.authenticated_users[connection_id] = user_data
+        logger.info(f"Stored authenticated user data for connection {connection_id}: role={user_data.get('role')}")
+
+    def get_authenticated_user(self, connection_id: str) -> Optional[Dict[str, Any]]:
+        """Get authenticated user data for connection"""
+        return self.authenticated_users.get(connection_id)
 
     async def send_personal_message(self, message: Dict[str, Any], connection_id: str):
         """Send message to specific connection"""
@@ -136,7 +149,9 @@ async def handle_websocket_message(
     
     message_type = data.get("type", "chat")
     
-    if message_type in ["chat", "user_message"]:
+    if message_type == "auth":
+        await handle_auth_message(data, connection_id, user_id)
+    elif message_type in ["chat", "user_message"]:
         await handle_chat_message(data, connection_id, user_id)
     elif message_type == "ping":
         await handle_ping_message(connection_id)
@@ -151,6 +166,60 @@ async def handle_websocket_message(
             "timestamp": datetime.utcnow().isoformat()
         }, connection_id)
 
+async def handle_auth_message(
+    data: Dict[str, Any],
+    connection_id: str,
+    user_id: str
+):
+    """Handle authentication message with Clerk JWT token"""
+    
+    token = data.get("token")
+    if not token:
+        await manager.send_personal_message({
+            "type": "auth_error",
+            "message": "No token provided",
+            "timestamp": datetime.utcnow().isoformat()
+        }, connection_id)
+        return
+    
+    try:
+        # Validate Clerk token
+        user_data = await validate_clerk_token(token)
+        
+        if user_data:
+            # Store authenticated user data
+            manager.set_authenticated_user(connection_id, user_data)
+            
+            # Send success response
+            await manager.send_personal_message({
+                "type": "auth_success",
+                "user": {
+                    "id": user_data.get("id"),
+                    "name": user_data.get("name"),
+                    "role": user_data.get("role"),
+                    "department": user_data.get("department"),
+                    "data_access_level": user_data.get("data_access_level")
+                },
+                "timestamp": datetime.utcnow().isoformat()
+            }, connection_id)
+            
+            logger.info(f"Successfully authenticated user {user_data.get('id')} with role {user_data.get('role')}")
+        else:
+            await manager.send_personal_message({
+                "type": "auth_error",
+                "message": "Invalid token",
+                "timestamp": datetime.utcnow().isoformat()
+            }, connection_id)
+            
+    except Exception as e:
+        logger.error(f"Authentication error: {e}")
+        await manager.send_personal_message({
+            "type": "auth_error",
+            "message": "Authentication failed",
+            "error": str(e),
+            "timestamp": datetime.utcnow().isoformat()
+        }, connection_id)
+
 async def handle_chat_message(
     data: Dict[str, Any],
     connection_id: str,
@@ -159,6 +228,16 @@ async def handle_chat_message(
     """Handle chat message with AI agent routing based on preferences"""
     
     try:
+        # Check if user is authenticated
+        user_data = manager.get_authenticated_user(connection_id)
+        if not user_data:
+            await manager.send_personal_message({
+                "type": "error",
+                "message": "Please authenticate first",
+                "timestamp": datetime.utcnow().isoformat()
+            }, connection_id)
+            return
+        
         # Support both frontend format (content) and legacy (message)
         message = data.get("content") or data.get("message", "")
         context = data.get("context")
@@ -223,11 +302,14 @@ async def handle_chat_message(
             "timestamp": datetime.utcnow().isoformat()
         }, connection_id)
         
-        # Prepare user context
+        # Prepare user context using authenticated user data
         user_context = {
-            "user_id": user_id,
-            "role": "user",  # In production, this would come from authentication
-            "access_level": "basic",
+            "user_id": user_data.get("id", user_id),
+            "name": user_data.get("name", "Unknown User"),
+            "role": user_data.get("role", "SALESPERSON"),
+            "data_sensitivity": user_data.get("data_access_level", 1),
+            "department": user_data.get("department", "general"),
+            "access_level": "authenticated",
             "connection_type": "websocket"
         }
         
@@ -376,8 +458,25 @@ async def handle_streaming_message(
     }, connection_id)
     
     try:
+        # Check if user is authenticated
+        user_data = manager.get_authenticated_user(connection_id)
+        if not user_data:
+            await manager.send_personal_message({
+                "type": "stream_error",
+                "error": "Please authenticate first",
+                "timestamp": datetime.utcnow().isoformat()
+            }, connection_id)
+            return
+        
         # Get regular response (in production, this would be streaming)
-        user_context = {"user_id": user_id, "role": "user"}
+        user_context = {
+            "user_id": user_data.get("id", user_id),
+            "name": user_data.get("name", "Unknown User"),
+            "role": user_data.get("role", "SALESPERSON"),
+            "data_sensitivity": user_data.get("data_access_level", 1),
+            "department": user_data.get("department", "general"),
+            "access_level": "authenticated"
+        }
         response = await orchestrator.route_query(message, user_context)
         
         # Simulate streaming by sending chunks

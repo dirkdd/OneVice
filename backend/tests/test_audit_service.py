@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.services.audit_service import AuditService, PermissionCacheService
 from app.models.audit import AuditLog, AuditSummary
-from app.models.auth import Role, Permission
+from auth.models import PermissionSet, PermissionAction
 from app.core.exceptions import DatabaseError
 
 

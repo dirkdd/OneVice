@@ -34,7 +34,7 @@ class AIConfig(BaseSettings):
     # Together.ai Configuration
     together_api_key: Optional[str] = Field(default=None, env="TOGETHER_API_KEY")
     together_base_url: str = "https://api.together.xyz/v1"
-    together_default_model: str = "mistralai/Mixtral-8x7B-Instruct-v0.1"
+    together_default_model: str = "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
     together_max_tokens: int = 2048
     together_temperature: float = 0.7
     
@@ -47,6 +47,19 @@ class AIConfig(BaseSettings):
     
     # Anthropic Configuration
     anthropic_api_key: Optional[str] = Field(default=None, env="ANTHROPIC_API_KEY")
+    
+    # Folk CRM Configuration
+    folk_api_keys: Optional[str] = Field(default=None, env="FOLK_API_KEYS")
+    folk_api_url: str = Field(default="https://api.folk.app/v1", env="FOLK_API_BASE_URL")
+    folk_api_rate_limit: int = Field(default=100, env="FOLK_API_RATE_LIMIT")
+    folk_api_timeout: int = Field(default=30, env="FOLK_API_TIMEOUT")
+    
+    @property
+    def folk_api_key(self) -> Optional[str]:
+        """Get the first Folk API key from comma-separated list"""
+        if self.folk_api_keys:
+            return self.folk_api_keys.split(',')[0].strip()
+        return None
     
     # Neo4j Configuration
     neo4j_uri: Optional[str] = Field(default=None, env="NEO4J_URI") 

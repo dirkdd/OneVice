@@ -12,6 +12,7 @@ FastAPI application with comprehensive authentication system:
 """
 
 import os
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 from typing import Dict, Any, Optional
@@ -410,6 +411,60 @@ async def root():
     }
 
 
+# WebSocket helper functions
+async def websocket_heartbeat(websocket: WebSocket, interval: int = 30):
+    """
+    Send periodic heartbeat pings to keep WebSocket connection alive
+    
+    Args:
+        websocket: The WebSocket connection
+        interval: Seconds between heartbeat pings (default 30)
+    """
+    try:
+        while True:
+            await asyncio.sleep(interval)
+            # Send heartbeat ping
+            sent = await safe_websocket_send(websocket, {
+                "type": "heartbeat",
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            })
+            if not sent:
+                # Connection is closed, exit heartbeat loop
+                break
+                
+    except asyncio.CancelledError:
+        logger.debug("Heartbeat task cancelled")
+    except Exception as e:
+        logger.error(f"Heartbeat error: {e}")
+
+
+async def safe_websocket_send(websocket: WebSocket, message: Dict[str, Any]) -> bool:
+    """
+    Safely send message to WebSocket with connection state validation
+    
+    Args:
+        websocket: The WebSocket connection
+        message: Dictionary message to send
+        
+    Returns:
+        bool: True if message sent successfully, False otherwise
+    """
+    try:
+        # Check if WebSocket is still connected
+        if hasattr(websocket, 'client_state') and websocket.client_state.name == 'CONNECTED':
+            await websocket.send_json(message)
+            return True
+        else:
+            logger.warning("Attempted to send message to disconnected WebSocket")
+            return False
+    except WebSocketDisconnect:
+        logger.info("WebSocket disconnected during send operation")
+        return False
+    except Exception as e:
+        logger.error(f"WebSocket send error: {e}")
+        return False
+
+
 # WebSocket endpoint with optional authentication
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -421,13 +476,17 @@ async def websocket_endpoint(websocket: WebSocket):
     """
     
     user = None
+    heartbeat_task = None
     
     try:
         # Accept connection first (no auth required)
         await websocket.accept()
         
+        # Start heartbeat task to keep connection alive
+        heartbeat_task = asyncio.create_task(websocket_heartbeat(websocket))
+        
         # Send connection established message
-        await websocket.send_json({
+        await safe_websocket_send(websocket, {
             "type": "connection",
             "data": {
                 "message": "WebSocket connection established. Please authenticate to access chat features.",
@@ -451,7 +510,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     try:
                         token = data.get("token")
                         if not token:
-                            await websocket.send_json({
+                            await safe_websocket_send(websocket, {
                                 "type": "auth_error",
                                 "data": {"message": "No token provided"},
                                 "timestamp": datetime.now(timezone.utc).isoformat()
@@ -461,7 +520,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         # Validate Clerk JWT token
                         user_dict = await validate_clerk_token(token)
                         if not user_dict:
-                            await websocket.send_json({
+                            await safe_websocket_send(websocket, {
                                 "type": "auth_error",
                                 "data": {"message": "Invalid or expired token"},
                                 "timestamp": datetime.now(timezone.utc).isoformat()
@@ -471,7 +530,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         # Store validated user data
                         user = user_dict
                         
-                        await websocket.send_json({
+                        await safe_websocket_send(websocket, {
                             "type": "auth_success",
                             "data": {
                                 "message": f"Authenticated as {user['name']}",
@@ -482,7 +541,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         })
                         
                     except Exception as auth_error:
-                        await websocket.send_json({
+                        await safe_websocket_send(websocket, {
                             "type": "auth_error",
                             "data": {"message": f"Authentication failed: {str(auth_error)}"},
                             "timestamp": datetime.now(timezone.utc).isoformat()
@@ -490,7 +549,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 
                 elif message_type == "user_message":
                     if not user:
-                        await websocket.send_json({
+                        await safe_websocket_send(websocket, {
                             "type": "error",
                             "data": {"message": "Please authenticate first"},
                             "timestamp": datetime.now(timezone.utc).isoformat()
@@ -505,19 +564,26 @@ async def websocket_endpoint(websocket: WebSocket):
                         metadata=metadata
                     )
                     
-                    # Send response back to client
-                    await websocket.send_json(response)
+                    # Send response back to client (with connection state validation)
+                    sent = await safe_websocket_send(websocket, response)
+                    if not sent:
+                        logger.warning(f"Failed to send chat response to disconnected client")
                     
                 elif message_type == "ping":
                     # Handle ping for connection health
-                    await websocket.send_json({
+                    await safe_websocket_send(websocket, {
                         "type": "pong",
                         "timestamp": datetime.now(timezone.utc).isoformat()
                     })
                     
+                elif message_type == "heartbeat_response":
+                    # Client responded to our heartbeat - connection is healthy
+                    logger.debug(f"Received heartbeat response from client")
+                    # No need to send response, just acknowledge reception
+                    
                 else:
                     # Unknown message type
-                    await websocket.send_json({
+                    await safe_websocket_send(websocket, {
                         "type": "error",
                         "data": {"message": f"Unknown message type: {message_type}"},
                         "timestamp": datetime.now(timezone.utc).isoformat()
@@ -525,14 +591,14 @@ async def websocket_endpoint(websocket: WebSocket):
                     
             except Exception as msg_error:
                 logger.error(f"Error processing message: {msg_error}")
-                await websocket.send_json({
+                await safe_websocket_send(websocket, {
                     "type": "error", 
                     "data": {"message": "Failed to process message"},
                     "timestamp": datetime.now(timezone.utc).isoformat()
                 })
             
     except WebSocketDisconnect:
-        user_name = user['name'] if user and isinstance(user, dict) else 'unknown'
+        user_name = f"User {user['id'][:8]}..." if user and isinstance(user, dict) and user.get('id') else 'anonymous'
         logger.info(f"WebSocket client disconnected: {user_name}")
     except Exception as e:
         logger.error(f"WebSocket error: {e}")
@@ -540,6 +606,14 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.close(code=1008, reason="Connection error")
         except Exception:
             pass
+    finally:
+        # Clean up heartbeat task
+        if heartbeat_task and not heartbeat_task.done():
+            heartbeat_task.cancel()
+            try:
+                await heartbeat_task
+            except asyncio.CancelledError:
+                pass
 
 
 async def handle_chat_message(user: AuthUser, content: str, conversation_id: Optional[str] = None, metadata: Dict[str, Any] = None) -> Dict[str, Any]:
@@ -813,7 +887,7 @@ async def apply_security_filtering(query: str, user_context: Dict[str, Any]) -> 
             "Salesperson": 4
         }
         
-        user_level = role_hierarchy.get(user_role, 4)  # Default to lowest level
+        user_level = role_hierarchy.get(user_role.title(), 4)  # Default to lowest level, case-insensitive
         
         # Filter sensitive content keywords
         sensitive_keywords = [
@@ -881,13 +955,14 @@ async def generate_ai_response_with_metadata(content: str, user_dict: Dict[str, 
     user_name = user_dict.get("name", "there")
     
     try:
-        # Prepare user context with RBAC data
+        # Prepare user context with RBAC data from Clerk metadata
         user_context = {
             "user_id": user_dict.get("id", "unknown"),
             "name": user_name,
-            "role": user_dict.get("role", "Salesperson"),
-            "data_sensitivity": user_dict.get("data_sensitivity", 6),  # Default to least sensitive
+            "role": user_dict.get("role", "Salesperson"),  # This will now come from Clerk metadata
+            "data_sensitivity": user_dict.get("data_access_level", 1),  # Use access level from metadata
             "permissions": user_dict.get("permissions", []),
+            "department": user_dict.get("department", "general"),  # Department from metadata
             "session_context": {
                 "conversation_id": conversation_id,
                 "timestamp": datetime.now().isoformat()

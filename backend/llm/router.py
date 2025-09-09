@@ -170,7 +170,11 @@ class LLMRouter:
         """
         
         # Extract user context
-        user_role = UserRole(user_context.get("role", "Salesperson"))
+        role_str = user_context.get("role", "SALESPERSON").upper()
+        try:
+            user_role = UserRole[role_str]
+        except KeyError:
+            user_role = UserRole.SALESPERSON
         data_sensitivity = user_context.get("data_sensitivity", 6)  # Default to least sensitive
         
         # Assess query complexity

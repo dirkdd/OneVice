@@ -120,6 +120,25 @@ class SchemaManager:
                 property="id", 
                 description="Unique identifier for document entities"
             ),
+            # Folk.app CRM constraints  
+            ConstraintDefinition(
+                name="group_folk_id_unique",
+                node_label="Group",
+                property="folkId",
+                description="Unique Folk ID for group entities"
+            ),
+            ConstraintDefinition(
+                name="deal_folk_id_unique",
+                node_label="Deal",
+                property="folkId", 
+                description="Unique Folk ID for deal entities"
+            ),
+            ConstraintDefinition(
+                name="opportunity_folk_id_unique",
+                node_label="Opportunity",
+                property="folkId",
+                description="Unique Folk ID for opportunity entities" 
+            ),
             # Additional constraints for data integrity
             ConstraintDefinition(
                 name="person_email_unique",
@@ -128,10 +147,22 @@ class SchemaManager:
                 description="Unique email addresses for persons"
             ),
             ConstraintDefinition(
+                name="person_folk_id_unique",
+                node_label="Person",
+                property="folkId",
+                description="Unique Folk ID for person entities"
+            ),
+            ConstraintDefinition(
                 name="organization_name_unique",
                 node_label="Organization",
                 property="name",
                 description="Unique organization names"
+            ),
+            ConstraintDefinition(
+                name="organization_folk_id_unique",
+                node_label="Organization",
+                property="folkId",
+                description="Unique Folk ID for organization entities"
             )
         ]
         
@@ -184,6 +215,37 @@ class SchemaManager:
                 node_label="Document", 
                 properties=["created_at"],
                 description="Index on document creation dates"
+            ),
+            # Folk.app CRM indexes
+            IndexDefinition(
+                name="group_name_index",
+                node_label="Group",
+                properties=["name"],
+                description="Index on Folk group names"
+            ),
+            IndexDefinition(
+                name="deal_name_index",
+                node_label="Deal",
+                properties=["name"],
+                description="Index on Folk deal names"
+            ),
+            IndexDefinition(
+                name="deal_status_index",
+                node_label="Deal",
+                properties=["status"],
+                description="Index on Folk deal status"
+            ),
+            IndexDefinition(
+                name="opportunity_name_index",
+                node_label="Opportunity",
+                properties=["name"],
+                description="Index on Folk opportunity names"
+            ),
+            IndexDefinition(
+                name="custom_object_entity_type_index",
+                node_label="CustomObject",
+                properties=["entityType"],
+                description="Index on custom object entity types"
             )
         ]
         
@@ -264,9 +326,158 @@ class SchemaManager:
             "SIMILAR_TO": {
                 "description": "AI-generated similarity between entities",
                 "properties": ["similarity_score", "similarity_type", "calculated_at"]
+            },
+            # Folk.app CRM relationships
+            "OWNS_CONTACT": {
+                "description": "Person owns contact (data provenance)",
+                "properties": ["imported_at", "source_system", "last_synced"]
+            },
+            "SOURCED": {
+                "description": "Person sourced custom object (deal, opportunity)",
+                "properties": ["sourced_at", "source_system", "last_updated"]
+            },
+            "WITH_CONTACT": {
+                "description": "Custom object associated with contact",
+                "properties": ["role_in_object", "primary_contact", "added_at"]
+            },
+            "FOR_ORGANIZATION": {
+                "description": "Custom object for organization",
+                "properties": ["relationship_type", "started_at", "is_active"]
+            },
+            "BELONGS_TO_GROUP": {
+                "description": "Entity belongs to Folk group",
+                "properties": ["added_at", "group_role", "is_active"]
             }
         }
     
+    async def create_folk_custom_object_constraint(self, entity_type: str) -> bool:
+        """
+        Create constraint for a new Folk custom object entity type
+        
+        Args:
+            entity_type: The entity type (e.g., 'Deal', 'Project', 'Opportunity')
+            
+        Returns:
+            bool: True if constraint created successfully
+        """
+        
+        try:
+            constraint_name = f"{entity_type.lower()}_folk_id_unique"
+            
+            cypher = f"""
+            CREATE CONSTRAINT {constraint_name} IF NOT EXISTS
+            FOR (n:{entity_type}) 
+            REQUIRE n.folkId IS UNIQUE
+            """
+            
+            result = await self.client.execute_query(cypher)
+            
+            if result.success:
+                logger.info(f"Created constraint for {entity_type}: {constraint_name}")
+                return True
+            else:
+                logger.error(f"Failed to create constraint for {entity_type}: {result.error}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Exception creating constraint for {entity_type}: {e}")
+            return False
+    
+    async def create_folk_custom_object_indexes(self, entity_type: str) -> Dict[str, bool]:
+        """
+        Create indexes for a new Folk custom object entity type
+        
+        Args:
+            entity_type: The entity type (e.g., 'Deal', 'Project', 'Opportunity')
+            
+        Returns:
+            Dict[str, bool]: Results for each index creation
+        """
+        
+        results = {}
+        
+        indexes = [
+            {
+                "name": f"{entity_type.lower()}_name_index",
+                "properties": ["name"]
+            },
+            {
+                "name": f"{entity_type.lower()}_entity_type_index", 
+                "properties": ["entityType"]
+            },
+            {
+                "name": f"{entity_type.lower()}_created_index",
+                "properties": ["createdAt"]
+            }
+        ]
+        
+        for index_config in indexes:
+            try:
+                properties_str = ", ".join([f"n.{prop}" for prop in index_config["properties"]])
+                
+                cypher = f"""
+                CREATE INDEX {index_config["name"]} IF NOT EXISTS
+                FOR (n:{entity_type})
+                ON ({properties_str})
+                """
+                
+                result = await self.client.execute_query(cypher)
+                
+                if result.success:
+                    results[index_config["name"]] = True
+                    logger.debug(f"Created index: {index_config['name']}")
+                else:
+                    results[index_config["name"]] = False
+                    logger.error(f"Failed to create index {index_config['name']}: {result.error}")
+                    
+            except Exception as e:
+                results[index_config["name"]] = False
+                logger.error(f"Exception creating index {index_config['name']}: {e}")
+        
+        return results
+    
+    async def ensure_folk_custom_object_schema(self, entity_types: List[str]) -> Dict[str, Any]:
+        """
+        Ensure schema elements exist for all discovered Folk custom object entity types
+        
+        Args:
+            entity_types: List of entity types to ensure (e.g., ['Deal', 'Project', 'Opportunity'])
+            
+        Returns:
+            Dict with results for each entity type
+        """
+        
+        results = {
+            "entity_types_processed": [],
+            "constraints_created": 0,
+            "indexes_created": 0,
+            "errors": []
+        }
+        
+        for entity_type in entity_types:
+            try:
+                # Create constraint
+                constraint_success = await self.create_folk_custom_object_constraint(entity_type)
+                if constraint_success:
+                    results["constraints_created"] += 1
+                
+                # Create indexes
+                index_results = await self.create_folk_custom_object_indexes(entity_type)
+                successful_indexes = sum(1 for success in index_results.values() if success)
+                results["indexes_created"] += successful_indexes
+                
+                # Track processed types
+                results["entity_types_processed"].append(entity_type)
+                
+                logger.info(f"Ensured schema for Folk custom object type: {entity_type}")
+                
+            except Exception as e:
+                error_msg = f"Failed to ensure schema for {entity_type}: {str(e)}"
+                results["errors"].append(error_msg)
+                logger.error(error_msg)
+        
+        return results
+
     async def create_core_schema(self) -> Dict[str, Any]:
         """
         Create complete core schema with constraints and indexes
@@ -641,7 +852,8 @@ class SchemaManager:
             ],
             "relationships": self.relationship_definitions,
             "node_labels": [
-                "Person", "Project", "Organization", "Document", "CreativeConcept"
+                "Person", "Project", "Organization", "Document", "CreativeConcept",
+                "Group", "Deal", "Opportunity", "CustomObject"
             ],
             "entertainment_industry_roles": [
                 "Director", "Creative Director", "Producer", "Executive Producer",

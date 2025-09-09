@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from typing import Optional, List, Dict, Any
 from app.models.user import User, SSOProvider
-from app.models.auth import Role, Permission, UserRole, DataSensitivityLevel
+from auth.models import UserRole, PermissionSet, PermissionAction, DataSensitivity
 from app.core.redis import session_manager
 from app.services.cache_service import permission_cache
 from app.services.audit_service import audit_service

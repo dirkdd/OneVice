@@ -70,6 +70,9 @@ export function useWebSocket(options: UseWebSocketOptions = {}): WebSocketState 
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectAttemptsRef = useRef(0);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const heartbeatTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isConnectingRef = useRef(false);
   const optionsRef = useRef(options);
   
   // Update options ref when options change
@@ -82,9 +85,13 @@ export function useWebSocket(options: UseWebSocketOptions = {}): WebSocketState 
     return import.meta.env.VITE_WS_URL || 'ws://localhost:8000/ws';
   }, []);
 
-  const clearError = useCallback(() => {
-    setState(prev => ({ ...prev, error: null }));
+  const updateConnectionState = useCallback((updates: Partial<WebSocketState>) => {
+    setState(prev => ({ ...prev, ...updates }));
   }, []);
+
+  const clearError = useCallback(() => {
+    updateConnectionState({ error: null });
+  }, [updateConnectionState]);
 
   const clearMessages = useCallback(() => {
     setState(prev => ({ 
@@ -108,11 +115,47 @@ export function useWebSocket(options: UseWebSocketOptions = {}): WebSocketState 
   }, []);
 
   const handleError = useCallback((error: string) => {
-    setState(prev => ({ ...prev, error }));
+    updateConnectionState({ 
+      error,
+      isConnecting: false // Stop connecting state on error
+    });
     if (optionsRef.current.onError) {
       optionsRef.current.onError(error);
     }
+  }, [updateConnectionState]);
+
+  const stopHeartbeat = useCallback(() => {
+    if (heartbeatIntervalRef.current) {
+      clearInterval(heartbeatIntervalRef.current);
+      heartbeatIntervalRef.current = null;
+    }
+    if (heartbeatTimeoutRef.current) {
+      clearTimeout(heartbeatTimeoutRef.current);
+      heartbeatTimeoutRef.current = null;
+    }
   }, []);
+
+  const startHeartbeat = useCallback(() => {
+    stopHeartbeat();
+    
+    // Send ping every 45 seconds (server sends heartbeat every 30 seconds)
+    heartbeatIntervalRef.current = setInterval(() => {
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({
+          type: 'ping',
+          timestamp: new Date().toISOString()
+        }));
+        
+        // Expect pong response within 10 seconds
+        heartbeatTimeoutRef.current = setTimeout(() => {
+          console.warn('Heartbeat timeout - connection may be stale, reconnecting...');
+          if (wsRef.current) {
+            wsRef.current.close(1006, 'Heartbeat timeout');
+          }
+        }, 10000);
+      }
+    }, 45000);
+  }, [stopHeartbeat]);
 
   const disconnect = useCallback(() => {
     if (reconnectTimeoutRef.current) {
@@ -120,28 +163,37 @@ export function useWebSocket(options: UseWebSocketOptions = {}): WebSocketState 
       reconnectTimeoutRef.current = null;
     }
 
+    stopHeartbeat();
+
     if (wsRef.current) {
       wsRef.current.close(1000, 'Client disconnect');
       wsRef.current = null;
     }
 
-    setState(prev => ({
-      ...prev,
+    updateConnectionState({
       isConnected: false,
       isConnecting: false,
-    }));
-  }, []);
+    });
+  }, [stopHeartbeat]);
 
   const connect = useCallback(() => {
-    if (wsRef.current?.readyState === WebSocket.CONNECTING) {
+    // Prevent creating duplicate connections
+    if (wsRef.current?.readyState === WebSocket.CONNECTING || 
+        wsRef.current?.readyState === WebSocket.OPEN) {
       return;
     }
 
-    setState(prev => ({ 
-      ...prev, 
+    // Connection mutex to prevent race conditions
+    if (isConnectingRef.current) {
+      return;
+    }
+    isConnectingRef.current = true;
+
+    updateConnectionState({ 
+      isConnected: false,  // Ensure we're not connected while connecting
       isConnecting: true,
       error: null 
-    }));
+    });
 
     try {
       const ws = new WebSocket(wsUrl);
@@ -149,6 +201,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}): WebSocketState 
       ws.onopen = async () => {
         console.log('WebSocket connected');
         reconnectAttemptsRef.current = 0;
+        isConnectingRef.current = false; // Clear connection mutex
         
         // Send authentication message after connection with proper async handling
         try {
@@ -166,12 +219,14 @@ export function useWebSocket(options: UseWebSocketOptions = {}): WebSocketState 
           console.error('Failed to get authentication token for WebSocket:', error);
         }
         
-        setState(prev => ({
-          ...prev,
+        updateConnectionState({
           isConnected: true,
           isConnecting: false,
           error: null,
-        }));
+        });
+        
+        // Start heartbeat to keep connection alive
+        startHeartbeat();
         
         if (optionsRef.current.onConnect) {
           optionsRef.current.onConnect();
@@ -196,6 +251,26 @@ export function useWebSocket(options: UseWebSocketOptions = {}): WebSocketState 
           if (response.type === 'auth_error') {
             console.error('WebSocket authentication failed:', response.data);
             handleError('Authentication failed');
+            return;
+          }
+          
+          // Handle heartbeat from server - respond to keep connection alive
+          if (response.type === 'heartbeat') {
+            console.debug('Received heartbeat from server, responding...');
+            ws.send(JSON.stringify({
+              type: 'heartbeat_response',
+              timestamp: new Date().toISOString()
+            }));
+            return;
+          }
+          
+          // Handle pong response to our ping - clear heartbeat timeout
+          if (response.type === 'pong') {
+            console.debug('Received pong response from server');
+            if (heartbeatTimeoutRef.current) {
+              clearTimeout(heartbeatTimeoutRef.current);
+              heartbeatTimeoutRef.current = null;
+            }
             return;
           }
           
@@ -255,22 +330,26 @@ export function useWebSocket(options: UseWebSocketOptions = {}): WebSocketState 
       ws.onclose = (event) => {
         console.log('WebSocket closed:', event.code, event.reason);
         
-        setState(prev => ({
-          ...prev,
+        updateConnectionState({
           isConnected: false,
           isConnecting: false,
-        }));
+        });
 
         if (optionsRef.current.onDisconnect) {
           optionsRef.current.onDisconnect();
         }
 
-        // Auto-reconnect logic
+        // Auto-reconnect logic with exponential backoff and jitter
         if (autoReconnect && reconnectAttemptsRef.current < maxReconnectAttempts && event.code !== 1000) {
           reconnectAttemptsRef.current += 1;
-          const delay = reconnectInterval * Math.pow(1.5, reconnectAttemptsRef.current - 1);
           
-          console.log(`Reconnecting in ${delay}ms (attempt ${reconnectAttemptsRef.current}/${maxReconnectAttempts})`);
+          // Exponential backoff: base * (2 ^ attempts) with jitter and max cap
+          const exponentialDelay = reconnectInterval * Math.pow(2, reconnectAttemptsRef.current - 1);
+          const maxDelay = 30000; // Cap at 30 seconds
+          const jitter = Math.random() * 1000; // Add 0-1s random jitter
+          const delay = Math.min(exponentialDelay + jitter, maxDelay);
+          
+          console.log(`Reconnecting in ${Math.round(delay)}ms (attempt ${reconnectAttemptsRef.current}/${maxReconnectAttempts}) [exponential backoff]`);
           
           reconnectTimeoutRef.current = setTimeout(() => {
             connect();
@@ -283,13 +362,14 @@ export function useWebSocket(options: UseWebSocketOptions = {}): WebSocketState 
       wsRef.current = ws;
     } catch (error) {
       console.error('Error creating WebSocket:', error);
-      setState(prev => ({ 
-        ...prev, 
+      isConnectingRef.current = false; // Clear connection mutex on error
+      updateConnectionState({ 
+        isConnected: false,
         isConnecting: false,
         error: 'Failed to create connection' 
-      }));
+      });
     }
-  }, [wsUrl, getToken, addMessage, handleError, autoReconnect, maxReconnectAttempts, reconnectInterval]);
+  }, [wsUrl, getToken, addMessage, handleError, autoReconnect, maxReconnectAttempts, reconnectInterval, updateConnectionState, startHeartbeat]);
 
   const reconnect = useCallback(() => {
     disconnect();
@@ -342,21 +422,14 @@ export function useWebSocket(options: UseWebSocketOptions = {}): WebSocketState 
     }
   }, [addMessage, handleError, agentPreferences]);
 
-  // Connect when component mounts - no authentication dependency
+  // Connect when component mounts and cleanup on unmount
   useEffect(() => {
     connect();
     
     return () => {
       disconnect();
     };
-  }, [connect, disconnect]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      disconnect();
-    };
-  }, [disconnect]);
+  }, []);
 
 
   return {

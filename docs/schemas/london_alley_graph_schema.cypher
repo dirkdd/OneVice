@@ -1,0 +1,199 @@
+/********************************************************************************
+ *
+ * London Alley - Unified Graph Schema for Neo4j LLM Graph Builder
+ * Version: 2.0 (Merged)
+ * Date: 2025-09-04
+ *
+ * Description:
+ * This schema defines the complete operational, creative, and business development
+ * graph ontology for London Alley. It merges the business process context, deep
+ * creative metadata, production logistics, and CRM data. It is designed to be
+ * used directly with the Neo4j LLM Graph Builder to guide the extraction process.
+ *
+ ********************************************************************************/
+
+// ================================================================================
+// 1. NODE SCHEMA DEFINITIONS
+// Defines the primary entities in the graph and their unique constraints.
+// This tells the LLM what types of nodes to create.
+// ================================================================================
+
+// -- Core Operational Nodes --
+CREATE CONSTRAINT department_name_unique IF NOT EXISTS FOR (d:Department) REQUIRE d.name IS UNIQUE;
+CREATE CONSTRAINT stage_name_unique IF NOT EXISTS FOR (s:Stage) REQUIRE s.name IS UNIQUE;
+
+// -- Core Entity Nodes --
+// A Person can be an employee, director, writer, or external talent.
+// For internal team members, set isInternal = true and store their Folk user ID.
+CREATE CONSTRAINT project_id_unique IF NOT EXISTS FOR (p:Project) REQUIRE p.projectId IS UNIQUE;
+CREATE CONSTRAINT person_id_unique IF NOT EXISTS FOR (p:Person) REQUIRE p.personId IS UNIQUE;
+CREATE CONSTRAINT person_folk_user_id_unique IF NOT EXISTS FOR (p:Person) REQUIRE p.folkUserId IS UNIQUE;
+CREATE CONSTRAINT organization_id_unique IF NOT EXISTS FOR (o:Organization) REQUIRE o.organizationId IS UNIQUE;
+CREATE CONSTRAINT document_id_unique IF NOT EXISTS FOR (d:Document) REQUIRE d.documentId IS UNIQUE;
+
+// -- Abstract Creative Nodes --
+CREATE CONSTRAINT creative_concept_name_unique IF NOT EXISTS FOR (c:CreativeConcept) REQUIRE c.name IS UNIQUE;
+
+// -- Production & Logistics Nodes (from 2.cypher) --
+CREATE CONSTRAINT location_name_unique IF NOT EXISTS FOR (l:Location) REQUIRE l.name IS UNIQUE;
+
+// ================================================================================
+// 1. NODE SCHEMA DEFINITIONS (Additions for Folk.app Integration)
+// ================================================================================
+
+// A Deal represents a business opportunity in the sales pipeline.
+CREATE CONSTRAINT deal_id_unique IF NOT EXISTS FOR (d:Deal) REQUIRE d.dealId IS UNIQUE;
+CREATE CONSTRAINT deal_folk_id_unique IF NOT EXISTS FOR (d:Deal) REQUIRE d.folkId IS UNIQUE;
+
+// A Group represents a custom segment of people or companies from Folk.
+CREATE CONSTRAINT group_name_unique IF NOT EXISTS FOR (g:Group) REQUIRE g.name IS UNIQUE;
+CREATE CONSTRAINT group_folk_id_unique IF NOT EXISTS FOR (g:Group) REQUIRE g.folkId IS UNIQUE;
+
+// Dynamic Custom Objects (Projects, Opportunities, etc.) - Created automatically by ingestion tool
+// Each discovered entity type will have constraints created dynamically:
+// CREATE CONSTRAINT {entity_type}_folk_id_unique IF NOT EXISTS FOR (o:{EntityType}) REQUIRE o.folkId IS UNIQUE;
+
+// Enhanced Person constraints for Folk integration
+CREATE CONSTRAINT person_folk_id_unique IF NOT EXISTS FOR (p:Person) REQUIRE p.folkId IS UNIQUE;
+
+// Enhanced Organization constraints for Folk integration  
+CREATE CONSTRAINT organization_folk_id_unique IF NOT EXISTS FOR (o:Organization) REQUIRE o.folkId IS UNIQUE;
+
+
+// ================================================================================
+// 2. DOCUMENT PROFILE SCHEMA (FOR TREATMENTS/DECKS)
+// This comment block describes the rich JSON structure that should be stored
+// in the `profile` property of a `Document` node when its type is 'Creative Treatment'.
+// The LLM should use this to understand the nested data it needs to extract.
+// ================================================================================
+
+/*
+ * FOR A NODE (:Document {documentType: "Creative Treatment"})
+ * THE `profile` PROPERTY SHOULD CONTAIN A JSON OBJECT MATCHING THIS SCHEMA:
+ *
+ * {
+ *   "project_summary": {
+ *     "projectName": "string",
+ *     "projectType": "string", // e.g., "Music Video", "Commercial Spot"
+ *     "clientOrBrand": { "name": "string" },
+ *     "logline": "string",
+ *     "target_audience": "string",
+ *     "deliverables": [{ "format": "string", "length": "string" }]
+ *   },
+ *   "creative_rationale": {
+ *     "director_statement": "string",
+ *     "brand_repositioning": "string",
+ *     "rejection_of_status_quo": "string"
+ *   },
+ *   "creative_core": {
+ *     "primaryTheme": "string",
+ *     "secondaryThemes": ["string"],
+ *     "narrativeTropes": ["string"]
+ *   },
+ *   "style_blueprint": {
+ *     "color": { "palette": ["string"], "theory": ["string"] },
+ *     "compositionAndFraming": { "cameraStyle": ["string"] },
+ *     "sonic_identity": { "music_genre": ["string"], "sound_design": ["string"] }
+ *   },
+ *   "linked_entities": {
+ *      "people": [{ "name": "string", "role": "string" }],
+ *      "organizations": [{ "name": "string", "type": "string" }]
+ *   }
+ * }
+ */
+
+// ================================================================================
+// 2B. FOLK CUSTOM OBJECT PROPERTY SCHEMA
+// This describes the standardized properties for Folk.app custom objects
+// (Deal, Project, Opportunity, etc.) created by the dynamic ingestion tool.
+// ================================================================================
+
+/*
+ * FOR NODES WITH DYNAMIC LABELS FROM FOLK (Deal, Project, Opportunity, etc.)
+ * THE FOLLOWING PROPERTIES ARE STANDARDIZED:
+ *
+ * {
+ *   "objectId": "uuid-generated-unique-id",
+ *   "folkId": "folk-api-unique-identifier", 
+ *   "entityType": "Deal|Project|Opportunity|...",
+ *   "name": "string",
+ *   "status": "string", // e.g., "Open", "Won", "Lost"
+ *   "value": "number|null", // Deal value in currency
+ *   "currency": "string|null", // e.g., "USD", "EUR"
+ *   "probability": "number|null", // 0-100 probability of success
+ *   "expectedCloseDate": "ISO-date-string|null",
+ *   "actualCloseDate": "ISO-date-string|null", 
+ *   "description": "string|null",
+ *   "stage": "string|null", // Current sales stage
+ *   "source": "string|null", // Lead source
+ *   "tags": ["string"], // Array of tags
+ *   "customFields": "object|null", // Custom fields from Folk
+ *   "createdAt": "ISO-date-string",
+ *   "updatedAt": "ISO-date-string",
+ *   "lastSyncedAt": "ISO-date-string", // When synced from Folk
+ *   "dataOwnerFolkId": "string" // Folk user ID who owns this data
+ * }
+ */
+
+
+// ================================================================================
+// 3. RELATIONSHIP SCHEMA (EXEMPLARS)
+// These commented-out patterns show the LLM how nodes are intended to be connected.
+// This is the most effective way to define the relationship schema for the LLM.
+// ================================================================================
+
+// -- Document and Project Relationships --
+// MATCH (doc:Document), (proj:Project) MERGE (doc)-[:DESCRIBES]->(proj);
+// MATCH (doc:Document), (p:Person) MERGE (doc)-[:AUTHORED_BY]->(p);
+// MATCH (doc:Document), (org:Organization) MERGE (doc)-[:RECEIVED_FROM]->(org); // e.g., an Agency Brief
+
+// -- Project Relationships --
+// MATCH (proj:Project), (dept:Department) MERGE (proj)-[:MANAGED_BY]->(dept);
+// MATCH (proj:Project), (stage:Stage) MERGE (proj)-[:CURRENTLY_IN_STAGE]->(stage);
+// MATCH (proj:Project), (org:Organization) MERGE (proj)-[:FOR_CLIENT]->(org);
+// MATCH (proj:Project), (agency:Organization) MERGE (proj)-[:COMMISSIONED_BY]->(agency);
+
+// -- Person and Project/Department Relationships --
+// MATCH (p:Person), (proj:Project) MERGE (p)-[:DIRECTED]->(proj);
+// MATCH (p:Person), (proj:Project) MERGE (p)-[:WROTE_TREATMENT_FOR]->(proj);
+// MATCH (p:Person), (proj:Project) MERGE (p)-[:DESIGNED_TREATMENT_FOR]->(proj);
+// MATCH (p:Person), (dept:Department) MERGE (p)-[:WORKS_FOR]->(dept);
+
+// -- Creative Concept Relationships (Very Important) --
+// MATCH (proj:Project), (concept:CreativeConcept) MERGE (proj)-[:FEATURES_CONCEPT]->(concept);
+// MATCH (p:Person), (concept:CreativeConcept) MERGE (p)-[:KNOWN_FOR]->(concept);
+// MATCH (c1:CreativeConcept), (c2:CreativeConcept) MERGE (c1)-[:RELATED_TO]->(c2);
+
+// -- Workflow/Pipeline Relationships --
+// MATCH (s1:Stage), (s2:Stage) MERGE (s1)-[:NEXT_STAGE]->(s2);
+
+// -- Production & Vendor Relationships (from 2.cypher) --
+// MATCH (p:Person), (proj:Project) MERGE (p)-[:CONTRIBUTED_TO {role: "Specific Job Title"}]->(proj);
+// MATCH (org:Organization), (proj:Project) MERGE (org)-[:PROVIDED_SERVICE {service: "Service Type"}]->(proj);
+// MATCH (proj:Project), (loc:Location) MERGE (proj)-[:FILMED_AT]->(loc);
+
+// ================================================================================
+// 3. RELATIONSHIP SCHEMA (EXEMPLARS - Additions for Integration)
+// ================================================================================
+
+// -- CRM & Business Development Relationships --
+// MATCH (p:Person), (g:Group) MERGE (p)-[:BELONGS_TO]->(g);
+// MATCH (d:Deal), (p:Person) MERGE (d)-[:WITH_CONTACT]->(p);
+// MATCH (d:Deal), (o:Organization) MERGE (d)-[:FOR_ORGANIZATION]->(o);
+// MATCH (d:Deal), (p:Project) MERGE (d)-[:EVOLVED_INTO]->(p); // For won deals
+
+// -- Enhanced Dynamic Custom Object Relationships --
+// Generic patterns that work with any discovered entity type (Deal, Project, Opportunity, etc.)
+// MATCH (customObject), (p:Person) MERGE (customObject)-[:WITH_CONTACT]->(p);
+// MATCH (customObject), (o:Organization) MERGE (customObject)-[:FOR_ORGANIZATION]->(o);
+// MATCH (customObject), (g:Group) MERGE (customObject)-[:BELONGS_TO_GROUP]->(g);
+
+// -- Internal Data Ownership Relationships --
+// MATCH (p:Person), (d:Deal) MERGE (p)-[:SOURCED]->(d);
+// MATCH (p:Person), (customObject) MERGE (p)-[:SOURCED]->(customObject); // For any custom object
+// MATCH (p:Person), (contact) MERGE (p)-[:OWNS_CONTACT]->(contact); // For people and companies
+
+// -- Inter-Person Relationships (from 3.cypher) --
+// MATCH (p1:Person), (p2:Person) MERGE (p1)-[:KNOWS]->(p2);
+// MATCH (p1:Person), (p2:Person) MERGE (p1)-[:WORKS_WITH_AT_SAME_COMPANY]->(p2);
+// MATCH (p1:Person), (p2:Person) MERGE (p1)-[:REPORTS_TO]->(p2);
