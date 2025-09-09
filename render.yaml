@@ -74,11 +74,15 @@ services:
         sync: false
       - key: NEO4J_PASSWORD
         sync: false
+      - key: REDIS_URL
+        sync: false
       - key: REDIS_HOST
         sync: false
       - key: REDIS_PORT
         sync: false
       - key: REDIS_PASSWORD
+        sync: false
+      - key: REDIS_USERNAME
         sync: false
       - key: DATABASE_URL
         sync: false

@@ -107,14 +107,15 @@ async def initialize_services():
     global auth_service, authz_service, user_service, audit_service, redis_client, websocket_auth, llm_router, agent_orchestrator
     
     try:
-        # Initialize Redis client
-        redis_url = os.getenv("REDIS_URL")
+        # Initialize Redis client with effective URL (from components if needed)
+        from app.core.redis import get_effective_redis_url
+        redis_url = get_effective_redis_url()
         if redis_url:
             redis_client = aioredis.from_url(redis_url)
             await redis_client.ping()
             logger.info("Redis connection established")
         else:
-            logger.warning("Redis not configured - sessions will be memory-only")
+            logger.warning("Redis not configured - check REDIS_URL or REDIS_HOST/REDIS_PORT/REDIS_PASSWORD - sessions will be memory-only")
         
         # Initialize core services
         auth_service = AuthenticationService(redis_client)
