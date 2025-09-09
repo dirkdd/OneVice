@@ -146,73 +146,12 @@ async def get_organization_profile(org_name: str, neo4j_client) -> Dict[str, Any
         else:
             logger.info("  - No nodes found in database!")
         
-        # Try a broader search first (exclude vector embeddings and handle data types properly)
-        broad_query = """
-        MATCH (n) 
-        WHERE ANY(prop IN keys(n) WHERE 
-            NOT prop ENDS WITH '_embedding' AND 
-            prop <> 'bio_embedding' AND
-            prop <> 'project_embedding' AND
-            prop <> 'content_embedding' AND
-            n[prop] IS NOT NULL AND
-            (n[prop] IS NOT NULL) AND
-            (
-                (n[prop] =~ '(?i).*boost.*' AND size(toString(n[prop])) < 1000) OR
-                (toString(n[prop]) =~ '(?i).*boost.*' AND size(toString(n[prop])) < 1000)
-            )
-        )
-        RETURN labels(n) as labels, keys(n) as properties, 
-               [prop IN keys(n) WHERE NOT prop ENDS WITH '_embedding' AND toString(n[prop]) CONTAINS 'boost' | prop + ': ' + toString(n[prop])] as matching_props 
-        LIMIT 5
-        """
-        broad_result = await neo4j_client.execute_query(broad_query, {"org_name": org_name})
-        logger.info(f"🔍 DEBUG: Broad 'boost' search results:")
-        if broad_result and broad_result.records:
-            for record in broad_result.records:
-                labels = record.get("labels", [])
-                props = record.get("properties", [])
-                logger.info(f"  - Found {labels} node with properties: {props}")
-        else:
-            logger.info("  - No 'boost' related nodes found")
+        # Removed problematic broad search query that was causing toString() errors on vector embeddings
+        # The main organization query below works correctly and provides the needed functionality
+        logger.info("🔍 DEBUG: Skipping broad search to avoid vector embedding toString() errors")
         
         # Add vector search for treatment writers and project details
-        logger.info(f"🔍 DEBUG: Adding vector search for treatment writers...")
-        vector_query = """
-        MATCH (o:Organization)
-        WHERE o.id CONTAINS $org_name OR o.name CONTAINS $org_name OR 
-              toLower(o.id) CONTAINS toLower($org_name) OR toLower(o.name) CONTAINS toLower($org_name)
-        
-        // Vector search for people with "treatment" or "writer" in bio
-        CALL db.index.vector.queryNodes('person_bio_index', 10, [/* treatment writer embedding */])
-        YIELD node as person, score
-        WHERE score > 0.8
-        OPTIONAL MATCH (person)-[:CONTRIBUTED_TO]->(proj:Project)-[:FOR_CLIENT]->(o)
-        
-        // Also find projects directly mentioning treatment
-        OPTIONAL MATCH (o)<-[:FOR_CLIENT]-(treatment_proj:Project)
-        WHERE toLower(treatment_proj.name) CONTAINS 'treatment' OR 
-              toLower(treatment_proj.description) CONTAINS 'treatment' OR
-              toLower(treatment_proj.type) CONTAINS 'treatment'
-        
-        // Find people who worked on treatment projects
-        OPTIONAL MATCH (writer:Person)-[:CONTRIBUTED_TO]->(treatment_proj)
-        WHERE toLower(writer.role) CONTAINS 'writer' OR 
-              toLower(writer.bio) CONTAINS 'treatment' OR
-              toLower(writer.bio) CONTAINS 'writer'
-              
-        RETURN o {
-            .id, .name, .type, .description, .folkId
-        } AS organization,
-        collect(DISTINCT person.name) AS treatment_writers_vector,
-        collect(DISTINCT writer.name) AS treatment_writers_graph,
-        collect(DISTINCT treatment_proj.name) AS treatment_projects,
-        collect(DISTINCT {
-            name: writer.name, 
-            role: writer.role, 
-            bio: writer.bio,
-            project: treatment_proj.name
-        }) AS writer_details
-        """
+        logger.info(f"🔍 DEBUG: Starting organization queries...")
         
         logger.info(f"🔍 DEBUG: Now executing original Organization query...")
         result = await neo4j_client.execute_query(query, {"org_name": org_name})
